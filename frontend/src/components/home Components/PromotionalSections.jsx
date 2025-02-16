@@ -14,7 +14,6 @@ const PromotionalSection = () => {
             const response = await axios.get('http://localhost:3000/random/products');
             const products = response.data;
             setRandomProducts(products);
-            console.log(products);
             setError(false);
             setLoading(false);
 
@@ -45,7 +44,7 @@ const PromotionalSection = () => {
         <div id="promotionCarousel" className="carousel slide" data-bs-interval="false" >
           <div className="carousel-inner">
             {randomProducts.map((product, index) => (
-              <div className={` position-relative carousel-item ${index === 0 ? "active" : ""}`} key={product.id} style={{height:"35rem"}}>
+              <div className={` position-relative carousel-item ${index === 0 ? "active" : ""}`} key={index} style={{height:"35rem"}}>
                 <img src={product.thumbnail} className="d-block mx-auto " alt={product.title} style={{ height: "30rem",}} />
                 <div className="carousel-caption d-none d-md-block position-absolute bottom-0">
                   <h5>{product.title}</h5>

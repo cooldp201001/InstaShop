@@ -17,7 +17,6 @@ const CustomerReviews = () => {
   useEffect(()=>{
     getReviews();
   },[])
-  console.log(reviews)
   return (
     <section className="customer-reviews py-5">
       <div className="container">

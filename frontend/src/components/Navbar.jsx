@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-const Navbar = () => {
+const Navbar = ({cartItemCount}) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
       <div className="container-fluid">
@@ -35,9 +35,11 @@ const Navbar = () => {
                 Profile
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/myOrders">
-                My orders
+           
+              <li className="nav-item">
+              <Link className="nav-link" to="/cart">
+                🛒 Cart 
+                <span className="badge bg-primary ms-2">{cartItemCount}</span>
               </Link>
             </li>
             <li className="nav-item">
