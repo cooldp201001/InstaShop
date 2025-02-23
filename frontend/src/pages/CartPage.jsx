@@ -1,34 +1,14 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { useState } from "react";
-const CartPage = ({
-  cartItems,
-}) => {
+import { useState,useContext } from "react";
+import { CartContext } from "../../context/cartContext";
+const CartPage = () => {
 
+  const {cartItems, setCartItems} = useContext(CartContext);
   const [cart, setCart] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [removeItem,setRemoveItem] =useState(false); 
-       // Fetch cart items when the component loads
-       useEffect(() => {
-        const fetchCart = async () => {
-          try {
-            const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
-            const response = await axios.get("http://localhost:3000/cart", {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-            setCart(response.data);
-            setRemoveItem(true);
-            // setLoading(false);
-          } catch (error) {
-            console.error("Error fetching cart:", error);
-            // setLoading(false);
-          }
-        };
-        
-        fetchCart();
-      }, []);
+  // const [totalAmount, setTotalAmount] = useState(0);
+  // const [removeItem,setRemoveItem] =useState(false); 
+     
       
       
   // Remove product from cart
@@ -75,7 +55,7 @@ const CartPage = ({
     );
   
       // Update state after successful backend update
-      setCart((prevCart) =>
+      setCartItems((prevCart) =>
         prevCart.map((item) =>
           item._id == id ? { ...item, quantity: newQuantity } : item
         )
@@ -87,7 +67,7 @@ const CartPage = ({
   
       //Calculate the total products price in cart;
   const handleCartTotalAmount = () => {
-    return cart.reduce(
+    return cartItems.reduce(
       (total, item) => total + item.product.price * item.quantity,
       0
     );
@@ -101,11 +81,11 @@ const CartPage = ({
   return (
     <div className="container mt-4">
       <h2 className="mx-auto mb-4 w-25">Cart Product List</h2>
-      {cart.length === 0 ? (
+      {cartItems.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
         <div>
-          {cart.map((item) => (
+          {cartItems.map((item) => (
             <div className="card mb-3" key={item._id}>
             {console.log(item._id)}
 
