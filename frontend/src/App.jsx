@@ -1,6 +1,7 @@
 
 import { BrowserRouter,Routes ,Route} from "react-router-dom"
 import {useState, useEffect} from 'react'
+import axios from "axios"
 import Navbar from "./components/Navbar"
 import HomePage from "./pages/HomePage"
 import ProductPage from "./pages/ProductPage"
@@ -9,21 +10,21 @@ import ProfilePage from "./pages/ProfilePage"
 import MyOrdersPage from "./pages/MyOrdersPage"
 import ProductDetailsPage from "./pages/ProductDetailsPage"
 import CartPage from "./pages/CartPage"
+import RegisterPage from "./pages/RegisterPage"
+import LoginPage from "./pages/LoginPage"
 function App() {
 
-  const [cartItems, setCartItems] = useState(() => {
-    // Load cart from localStorage on initial render
-    const savedCart = localStorage.getItem("cartItems");
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const [cartItems, setCartItems] = useState([]);
   
    // Load cart items from localStorage on page load
-   useEffect(() => {
+  /* useEffect(() => {
     const storedCart = window.localStorage.getItem("cartItems");
     if (storedCart) {
       setCartItems(JSON.parse(storedCart));
     }
   }, []);
+  */
+
 
   // Store cart items in localStorage whenever cartItems changes
   useEffect(() => {
@@ -31,7 +32,8 @@ function App() {
   }, [cartItems]);
 
   // Add product to cart
-  const handleAddToCart = (product) => {
+  /* const handleAddToCart = (product) => {
+
     const existingProduct = cartItems.find((item) => item.id === product.id);
     if (existingProduct) {
       setCartItems(
@@ -46,21 +48,38 @@ function App() {
     }
     alert("Product added to cart!");
   };
+  
 
-  // Remove product from cart
-  const handleRemoveFromCart = (id) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
-  };
+*/
 
-  // Update product quantity in the cart
-  const handleUpdateQuantity = (id, newQuantity) => {
-    console.log(cartItemCount);
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
+
+//Add product to cart (API call version)
+const handleAddToCart = async (product) => {
+  try {
+    const token = localStorage.getItem("token"); // Get the user's token
+    const response = await axios.post(
+      "http://localhost:3000/cart",
+      {
+        productId: product._id, // Send product ID and quantity to the backend
+        quantity: product.quantity|| 1, // Default quantity is 1 (you can adjust as needed)
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach the token for authentication
+        },
+      }
     );
-  };
+
+    if (response.status === 200) {
+      alert("Product added to cart!");
+
+    }
+  } catch (error) {
+    console.error("Error adding product to cart:", error);
+    alert("Failed to add product to cart.");
+  }
+};
+
 
   const cartItemCount = cartItems.reduce((total, item) => total + Number(item.quantity), 0);
 
@@ -77,12 +96,12 @@ function App() {
           element={
             <CartPage
               cartItems={cartItems}
-              handleRemoveFromCart={handleRemoveFromCart}
-              handleUpdateQuantity={handleUpdateQuantity}
+           
             />
           }
         />
-        <Route path="/aboutUs" element={<AboutUsPage />} />
+        <Route path="/register" element={<RegisterPage/>} />
+        <Route path="/login" element={<LoginPage/>} />
         <Route path="/profile" element={<ProfilePage />} />
     </Routes>
     </BrowserRouter>
