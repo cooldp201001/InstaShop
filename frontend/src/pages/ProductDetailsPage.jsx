@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { CartContext } from "../../context/cartContext";
 
-const ProductDetails = ({ handleAddToCart }) => {
+const ProductDetails = () => {
+  const {addToCart} = useContext(CartContext);
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -27,6 +29,37 @@ const ProductDetails = ({ handleAddToCart }) => {
   useEffect(() => {
     if (product) setTotalAmount(Number((product.price * quantity).toFixed(2)));
   }, [product, quantity]);
+
+        //Add product to cart (API call version)
+const handleAddToCart = async (product) => {
+  try {
+    const token = localStorage.getItem("token"); // Get the user's token
+    const response = await axios.post(
+      "http://localhost:3000/cart",
+      {
+        productId: product._id, // Send product ID and quantity to the backend
+        quantity: product.quantity|| 1, // Default quantity is 1 (you can adjust as needed)
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach the token for authentication
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      console.log(response.data);
+      const items = response.data;
+      alert("Product added to cart!");
+       // Update context state
+       addToCart(items);
+      // fetchCart();
+    }
+  } catch (error) {
+    console.error("Error adding product to cart:", error);
+    alert("Failed to add product to cart.");
+  }
+};
 
   return (
     <div className="container-fluid mt-4 text-white">

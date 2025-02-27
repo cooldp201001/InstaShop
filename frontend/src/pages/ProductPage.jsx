@@ -39,7 +39,6 @@ const ProductPage = () => {
     const categories = new Set();
     products.forEach((product) => categories.add(product.category));
     setAllCategories([...categories]);
-    console.log(allCategories)
   };
 
   // Handle category selection

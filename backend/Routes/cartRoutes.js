@@ -49,7 +49,7 @@ cartRouter.delete("/remove/:id", async (req, res) => {
     if (!cart) {
       return res.status(404).json({ message: "Cart item not found" });
     }
-    console.log(cart.items.length);
+    // console.log(cart.items.length);
 // If cart is empty after removing the item, delete the cart
 if (cart.items.length === 0) {
   await Cart.findOneAndDelete({  userId: req.user.id});
@@ -60,7 +60,7 @@ if (cart.items.length === 0) {
   } catch (error) {
     res.status(500).json({ message: "Error removing item", error });
   }
-  console.log(req.params.id);
+  // console.log(req.params.id);
 });
 
 //updating the quantity of iteam in cart

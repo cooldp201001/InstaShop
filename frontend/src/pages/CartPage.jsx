@@ -4,13 +4,12 @@ import { useState,useContext } from "react";
 import { CartContext } from "../../context/cartContext";
 const CartPage = () => {
 
-  const {cartItems, setCartItems} = useContext(CartContext);
-  const [cart, setCart] = useState([]);
+  const {cartItems, setCartItems, removeFromCart, updateCartItemQuantity} = useContext(CartContext);
+  // const [cart, setCart] = useState([]);
   // const [totalAmount, setTotalAmount] = useState(0);
   // const [removeItem,setRemoveItem] =useState(false); 
      
-      
-      
+
   // Remove product from cart
   const handleRemoveFromCart = async (id) => {
     try {
@@ -24,7 +23,8 @@ const CartPage = () => {
       console.log("Error in removing the product");
       // Remove from frontend state if successful
     
-        setCart((prevCart) => prevCart.filter((item) => item._id !== id));
+      // setCartItems((prevCart) => prevCart.filter((item) => item._id !== id));
+     removeFromCart(id);
       
     } catch (error) {
       if (error.response?.status === 403) {
@@ -55,11 +55,12 @@ const CartPage = () => {
     );
   
       // Update state after successful backend update
-      setCartItems((prevCart) =>
-        prevCart.map((item) =>
-          item._id == id ? { ...item, quantity: newQuantity } : item
-        )
-      );
+      // setCartItems((prevCart) =>
+      //   prevCart.map((item) =>
+      //     item._id == id ? { ...item, quantity: newQuantity } : item
+      //   )
+      // );
+      updateCartItemQuantity (id,newQuantity);
     } catch (error) {
       console.error("Error updating quantity:", error.response.data);
     }
@@ -87,7 +88,6 @@ const CartPage = () => {
         <div>
           {cartItems.map((item) => (
             <div className="card mb-3" key={item._id}>
-            {console.log(item._id)}
 
               <div className="row g-0">
                 <div className="col-md-4">

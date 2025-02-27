@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { CartContext } from "../../context/cartContext";
-const Navbar = ({cartItemCount}) => {
+const Navbar = () => {
 
   const {cartCount} = useContext(CartContext);
   return (
@@ -43,7 +43,7 @@ const Navbar = ({cartItemCount}) => {
               <li className="nav-item">
               <Link className="nav-link" to="/cart">
                 🛒 Cart 
-                <span className="badge bg-primary ms-2">{cartItemCount}</span>
+                <span className="badge bg-primary ms-2">{cartCount}</span>
               </Link>
             </li>
             <li className="nav-item">
