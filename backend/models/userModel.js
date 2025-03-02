@@ -3,39 +3,21 @@ const bcrypt = require("bcrypt");
 
 // Define the User Schema
 const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    trim: true,
+  firstName: { type: String, required: true, trim: true },
+  lastName: { type: String, required: true, trim: true },
+  email: { type: String, required: true, unique: true, trim: true, lowercase: true, validate: { validator: function (value) { return /^\S+@\S+\.\S+$/.test(value); }, message: "Invalid email format", }, },
+  password: { type: String, required: true, minlength: 1, },
+  address: {
+    street: { type: String },
+    landmark: { type: String },
+    city: { type: String },
+    state: { type: String },
+    postalCode: { type: String },
+    country: { type: String },
   },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    validate: {
-      validator: function (value) {
-        // Simple email validation regex
-        return /^\S+@\S+\.\S+$/.test(value);
-      },
-      message: "Invalid email format",
-    },
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 1,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  phone: {type:String},
+  createdAt: { type: Date, default: Date.now, },
+
 });
 
 // Hash the password before saving the user

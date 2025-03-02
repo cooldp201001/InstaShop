@@ -15,6 +15,7 @@ const loginRouter = require('./Routes/loginRouter');
 const authenticateToken = require('./middlewares/authMiddleware');
 const cartRouter = require('./Routes/cartRoutes');
 const orderRouter = require('./Routes/orderRoutes');
+const userRouter = require('./Routes/userRoutes');
 
 //Get all Products Categories
 // app.use('/categories',categories);
@@ -26,10 +27,7 @@ app.use('/product',productsRouter)
 app.use('/register',registerRouter)
 app.use('/login',loginRouter)
 
-app.use('/profile',authenticateToken,(req,res)=>{
-    // res.send("Welcome to your profile");
-    res.json(req.user)
-})
+app.use('/user',authenticateToken,userRouter)
 
 app.use('/order',authenticateToken,orderRouter);
 app.use('/cart',authenticateToken,cartRouter);
