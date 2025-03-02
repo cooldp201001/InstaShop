@@ -2,6 +2,8 @@ const express = require("express");
 const User = require("../models/userModel"); // Assuming UserModel is in the models directory
 const loginRouter = express.Router();
 const jwtUtils = require('../utils/jwtUtils')
+
+// loginRouter.get('/')
 // Login Route
 loginRouter.post("/", async (req, res) => {
   const { email, password } = req.body;

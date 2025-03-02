@@ -11,6 +11,7 @@ import ProductDetailsPage from "./pages/ProductDetailsPage"
 import CartPage from "./pages/CartPage"
 import RegisterPage from "./pages/RegisterPage"
 import LoginPage from "./pages/LoginPage"
+import OrderHistory from "./pages/OrderHistory"
 function App() {
 
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/register" element={<RegisterPage/>} />
         <Route path="/login" element={<LoginPage/>} />
   <Route path="/profile" element={<ProfilePage />} />
+  <Route path="/order" element={<OrderHistory/>}/>
     </Routes>
     </BrowserRouter>
   )

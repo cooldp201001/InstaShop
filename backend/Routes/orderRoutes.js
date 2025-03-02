@@ -36,6 +36,42 @@ orderRouter.post('/', async (req, res) => {
     res.status(500).json({ message: "Error placing order", error });
   }
 });
-// export default placeOrder;
 
+// Get order history for logged-in user
+orderRouter.get("/history", async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const orders = await Order.find({ userId })
+      .populate("items.productId", "title price thumbnail") // Get product details
+      .sort({ createdAt: -1 }); // Show latest orders first
+
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch orders", error });
+  }
+});
+// Cancel an order (Only if it is still pending)
+orderRouter.delete("/cancel/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const userId = req.user.id;
+
+    const order = await Order.findOne({ _id: orderId, userId });
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (order.status !== "Pending") {
+      return res.status(400).json({ message: "Cannot cancel a processed order" });
+    }
+
+    await Order.findByIdAndDelete(orderId);
+    res.status(200).json({ message: "Order canceled successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error canceling order", error });
+  }
+});
+
+// export default placeOrder;
 module.exports = orderRouter;
