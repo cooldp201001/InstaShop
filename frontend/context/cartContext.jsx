@@ -11,6 +11,7 @@ export const CartProvider = ({ children }) => {
     const fetchCart = async () => {
      try {
        const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+      
        const response = await axios.get("http://localhost:3000/cart", {
          headers: {
            Authorization: `Bearer ${token}`,
@@ -26,7 +27,6 @@ export const CartProvider = ({ children }) => {
         // setLoading(false);
         if(error.status ==403){
           localStorage.removeItem("token");
-          // window.location.href = "/login";
           return
         }
       }

@@ -14,6 +14,7 @@ const registerRouter = require('./Routes/register');
 const loginRouter = require('./Routes/loginRouter');
 const authenticateToken = require('./middlewares/authMiddleware');
 const cartRouter = require('./Routes/cartRoutes');
+const orderRouter = require('./Routes/orderRoutes');
 
 //Get all Products Categories
 // app.use('/categories',categories);
@@ -29,6 +30,8 @@ app.use('/profile',authenticateToken,(req,res)=>{
     // res.send("Welcome to your profile");
     res.json(req.user)
 })
+
+app.use('/order',authenticateToken,orderRouter);
 app.use('/cart',authenticateToken,cartRouter);
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
