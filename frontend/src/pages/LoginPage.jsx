@@ -22,11 +22,17 @@ const LoginPage = () => {
     e.preventDefault(); // Prevent page reload
 
     try {
+      // axios.defaults.withCredentials = true;
       // Send POST request to your backend login endpoint
-      const response = await axios.post("http://localhost:3000/login", formData);
+      const response = await axios.post("http://localhost:3000/login", formData,{
+        withCredentials:true
+      });
 
       // Store the token (or any other response) in local storage
-      localStorage.setItem("token", response.data.token);
+      // localStorage.setItem("token", response.data.token);
+      // console.log(response.data)
+    const  message = response.data
+      console.log(message);
 
       // Redirect or display a success message
       setMessage("Login successful!");

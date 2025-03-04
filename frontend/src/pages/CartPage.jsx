@@ -15,9 +15,8 @@ const CartPage = () => {
     try {
       // Call API to remove item from cart in the database
       const response = await axios.delete(`http://localhost:3000/cart/remove/${id}`,{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
+        withCredentials:true
+       
       })
       if(!response)
       console.log("Error in removing the product");
@@ -48,9 +47,8 @@ const CartPage = () => {
       const response = await axios.put(`http://localhost:3000/cart/update/${id}`, {
         quantity: newQuantity,
       },{
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        }
+        withCredentials:true
+
       }
     );
   

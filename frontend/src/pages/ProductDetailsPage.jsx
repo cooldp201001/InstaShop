@@ -49,9 +49,8 @@ const ProductDetails = () => {
           quantity: product.quantity || 1, // Default quantity is 1 (you can adjust as needed)
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`, // Attach the token for authentication
-          },
+          withCredentials:true
+          
         }
       );
 
@@ -88,9 +87,8 @@ const ProductDetails = () => {
           orderInfo: orderInfo,
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`, // Attach the token for authentication
-          },
+          withCredentials:true
+          ,
         }
       );
       console.log(response.data);

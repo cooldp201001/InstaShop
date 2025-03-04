@@ -12,7 +12,7 @@ const ProfilePage = () => {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get("http://localhost:3000/user/profile", {
-          headers: { Authorization: `Bearer ${token}` },
+          withCredentials:true,
         });
         setUser(response.data);
         console.log(response.data)
@@ -41,7 +41,7 @@ const ProfilePage = () => {
   const handleSaveEdit = async () => {
     try {
       await axios.put("http://localhost:3000/user/profile", editedUser, {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials:true,
       });
       setUser(editedUser);
       setIsEditing(false);

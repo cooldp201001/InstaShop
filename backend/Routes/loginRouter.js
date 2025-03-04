@@ -3,7 +3,6 @@ const User = require("../models/userModel"); // Assuming UserModel is in the mod
 const loginRouter = express.Router();
 const jwtUtils = require('../utils/jwtUtils')
 
-// loginRouter.get('/')
 // Login Route
 loginRouter.post("/", async (req, res) => {
   const { email, password } = req.body;
@@ -29,7 +28,19 @@ loginRouter.post("/", async (req, res) => {
      email: user.email,
     }
     const token = jwtUtils.generateToken(userInfo);
+      
+    // Set the token in an HTTP-only cookie
+    res.cookie("token", token, {
+      // httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    })
 
+    console.log(req.cookies);
+    res.cookie("token",token,{httpOnly:true});
+ 
+    // console.log(token)
    res.json({ message: "Login successful", token });
   } catch (error) {
      console.log(error);

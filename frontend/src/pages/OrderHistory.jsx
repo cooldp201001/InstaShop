@@ -13,7 +13,7 @@ const OrderHistory = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get("http://localhost:3000/order/history", {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials:true
       });
       setOrders(response.data);
       console.log(response.data)
@@ -29,7 +29,7 @@ const OrderHistory = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:3000/order/cancel/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        withCredentials:true
       });
       setOrders(orders.filter((order) => order._id !== orderId));
       alert("Order canceled successfully");

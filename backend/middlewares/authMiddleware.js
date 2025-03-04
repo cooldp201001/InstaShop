@@ -1,7 +1,8 @@
 // middleware/authMiddleware.js
 const JWTutils = require("../utils/jwtUtils")
 const authenticateToken = (req, res, next) => {
-  const token = req.headers["authorization"]?.split(" ")[1]; // Extract token from "Bearer <token>"
+  const token = req.cookies.token; // Extract token from "Bearer <token>"
+  console.log('from authMiddle',token)
   if (!token) {
     return res.status(401).json({ message: "Access denied. No token provided." });
   }
