@@ -22,10 +22,8 @@ export const CartProvider = ({ children }) => {
       } catch (error) {
         console.error("Error fetching cart:", error);
         // setLoading(false);
-        if(error.status ==403){
-          // localStorage.removeItem("token");
-          // routee to the login page
-          aleart(error.response.message)
+        if(error.status ==403 || error.status ==401){
+          
           return
         }
       }

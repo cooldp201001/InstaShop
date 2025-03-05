@@ -44,10 +44,12 @@ app.use('/login',loginRouter)
 
 
 app.use('/user',authenticateToken,userRouter)
-app.use('/order',authenticateToken,orderRouter);
 app.use('/cart',authenticateToken,cartRouter);
-app.use('/logout',(req,res)=>{
 
+// Protected routes (need to login first)
+app.use('/order',authenticateToken,orderRouter);
+
+app.use('/logout',(req,res)=>{
     res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -56,10 +58,6 @@ app.use('/logout',(req,res)=>{
       res.json({ message: "Logged out successfully" });
 })
 
-app.get('/set-cookie', (req, res) => {
-    res.cookie('test', '1234', { httpOnly: true });
-    res.send('Cookie set');
-  });
 
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
