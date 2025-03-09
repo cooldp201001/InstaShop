@@ -37,7 +37,7 @@ loginRouter.post("/", async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
     })
 
-    console.log(req.cookies);
+    // console.log(req.cookies);
     res.cookie("token",token,{httpOnly:true});
  
     // console.log(token)

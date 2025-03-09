@@ -6,6 +6,7 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [cartCount, setCartCount] = useState(0);
+  const [loginStatus,setLoginStatus] = useState(false);
   useEffect(() => {// Fetch cart items when the component loads 
     
     const fetchCart = async () => {
@@ -17,19 +18,20 @@ export const CartProvider = ({ children }) => {
        const items = response.data;
        setCartItems(items);
        setCartCount(items.length);
+       setLoginStatus(true);
       //  console.log(items.length);
        
       } catch (error) {
         console.error("Error fetching cart:", error);
         // setLoading(false);
         if(error.status ==403 || error.status ==401){
-          
+          setLoginStatus(false);
           return
         }
       }
     };
     fetchCart();
-  }, []);
+  }, [loginStatus]);
   
 
   const addToCart = (product) => {
@@ -66,7 +68,7 @@ export const CartProvider = ({ children }) => {
 
   return (
     <CartContext.Provider
-      value={{ cartItems, setCartItems, cartCount, setCartCount, addToCart, removeFromCart, updateCartItemQuantity }}
+      value={{ cartItems, setCartItems, cartCount, setCartCount, addToCart, removeFromCart, updateCartItemQuantity, loginStatus,setLoginStatus }}
     >
       {children}
     </CartContext.Provider>

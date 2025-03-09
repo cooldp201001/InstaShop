@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { CartContext } from "../../context/cartContext";
 const ProfilePage = () => {
+  const navigate = useNavigate(); 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({});
-
+ const{setLoginStatus,loginStatus} = useContext(CartContext);
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -15,7 +16,7 @@ const ProfilePage = () => {
           withCredentials:true,
         });
         setUser(response.data);
-        console.log(response.data)
+        // console.log(response.data)
         setEditedUser(response.data);
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -24,10 +25,10 @@ const ProfilePage = () => {
       }
     };
 
-    if (token) {
+  
       fetchUserProfile();
-    }
-  }, [token]);
+    
+  },[]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -67,10 +68,15 @@ const ProfilePage = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.reload();
-  };
+  const handleLogout = async () => {
+    try {
+    const response =  await axios.post("http://localhost:3000/logout", {},{withCredentials:true});
+        setLoginStatus(false);
+        navigate('/'); // Redirect to home page
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
+};
 
   if (loading)
     return (

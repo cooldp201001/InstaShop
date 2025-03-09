@@ -49,13 +49,11 @@ app.use('/cart',authenticateToken,cartRouter);
 // Protected routes (need to login first)
 app.use('/order',authenticateToken,orderRouter);
 
-app.use('/logout',(req,res)=>{
-    res.clearCookie("token", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-      });
-      res.json({ message: "Logged out successfully" });
+app.post('/logout',authenticateToken,(req,res)=>{
+  // console.log(res.cookie)
+  res.clearCookie("token", { httpOnly: true, sameSite: 'strict', secure: true,}); // Clear the cookie
+  res.status(200).json({ message: "Logout successful" });
+
 })
 
 

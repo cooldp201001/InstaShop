@@ -4,9 +4,11 @@ import { useContext } from "react";
 import { CartContext } from "../../context/cartContext";
 const Navbar = () => {
 
-  const {cartCount} = useContext(CartContext);
+  const {cartCount,loginStatus} = useContext(CartContext);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
   <img src="/logo/instashop-logo.png" style={{width:'10rem',height:'2rem'}} alt="Insta Shop" />
@@ -34,23 +36,33 @@ const Navbar = () => {
                 Product
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/profile">
-                Profile
-              </Link>
-            </li>
-           
+
+             {loginStatus ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">
+                    Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/cart">
+                    🛒 Cart
+                    <span className="badge bg-primary ms-2">{cartCount}</span>
+                  </Link>
+                </li>
+                <li className="nav-item ">
+                  <Link className="nav-link" to="/order">
+                    Orders
+                  </Link>
+                </li>
+              </>
+            ) : (
               <li className="nav-item">
-              <Link className="nav-link" to="/cart">
-                🛒 Cart 
-                <span className="badge bg-primary ms-2">{cartCount}</span>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/order">
-              Orders
-              </Link>
-            </li>
+                <Link className="nav-link text-bg-success rounded" to="/login">
+                Login
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>
