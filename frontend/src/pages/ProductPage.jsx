@@ -7,13 +7,17 @@ const ProductPage = () => {
   const [allCategories, setAllCategories] = useState([]);
   const [allTags, setAllTags] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [priceRange, setPriceRange] = useState(1000);
+  const [priceRange, setPriceRange] = useState(1000000);
   const [isFiltered, setIsFiltered] = useState(false);
-
-  // Fetching all products, tags, and categories
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true); 
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    applyFilters(); // Apply filters whenever the search term changes
+  }, [searchTerm]);
 
   const fetchProducts = async () => {
     try {
@@ -22,75 +26,96 @@ const ProductPage = () => {
       setFilteredProducts(response.data);
       extractTags(response.data);
       getAllCategories(response.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching products", error);
+      setLoading(false); 
     }
   };
 
-  // Extract tags from products
   const extractTags = (products) => {
     const tags = new Set();
     products.forEach((product) => product.tags.forEach((tag) => tags.add(tag)));
     setAllTags([...tags]);
   };
 
-  // Extract categories from products
   const getAllCategories = (products) => {
     const categories = new Set();
     products.forEach((product) => categories.add(product.category));
     setAllCategories([...categories]);
   };
 
-  // Handle category selection
   const handleCategoryChange = (category) => {
     setSelectedCategories((prev) =>
       prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
     );
   };
 
-  // Apply filters
   const applyFilters = () => {
     let filtered = allProducts.filter(
       (product) =>
         (selectedCategories.length === 0 || selectedCategories.includes(product.category)) &&
         product.price <= priceRange
     );
-
+  
+    if (searchTerm) {
+      filtered = filtered.filter((product) =>
+        product.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+  
     setFilteredProducts(filtered);
-    setIsFiltered(true);
+  
+    // Check if any filters are applied
+    const filtersApplied = selectedCategories.length > 0 || priceRange < 1000 || searchTerm.trim() !== "";
+    setIsFiltered(filtersApplied);
   };
+  
 
-  // Clear filters
   const clearFilters = () => {
     setSelectedCategories([]);
-    setPriceRange(1000);
+    setPriceRange(1000000);
     setFilteredProducts(allProducts);
     setIsFiltered(false);
+    setSearchTerm("");
   };
 
+  if (loading) {
+    return <div>Loading products...</div>; // Render loading indicator
+}
   return (
     <div className="container-fluid text-white">
-      {/* Product Grid */}
+    <div className="row my-3"> {/* Add a row for the search box */}
+        <div className="col-md-6 offset-md-3"> {/* Center the search box */}
+            <div className="input-group"> {/* Wrap input in input-group */}
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Search products..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <span className="input-group-text">
+                        <i class="fa-solid fa-magnifying-glass"></i> {/* Add search icon */}
+                        </span>
+                    </div>
+        </div>
+    </div>
+
       <div className="AllProducts d-flex flex-wrap justify-content-center gap-4">
         {filteredProducts.map((product, index) => (
           <div className="card" style={{ width: "15rem" }} key={index}>
-            <a className="text-black text-decoration-none  " href={`/product/${encodeURIComponent(product.id)}`}>
-            <img
-              className="card-img-top"
-              src={product.thumbnail}
-              alt={product.title}
-              loading="lazy"
-            />
-            <div className="card-body pb-0">
-              <h5 className="card-title">{product.title}</h5>
-              <p className="text-muted">${product.price}</p>
-            </div>
+            <a className="text-black text-decoration-none" href={`/product/${encodeURIComponent(product.id)}`}>
+              <img className="card-img-top" src={product.thumbnail} alt={product.title} loading="lazy" />
+              <div className="card-body pb-0">
+                <h5 className="card-title">{product.title}</h5>
+                <p className="text-muted">${product.price}</p>
+              </div>
             </a>
           </div>
         ))}
       </div>
 
-      {/* Floating Filter Button */}
       <button
         className={`btn ${isFiltered ? "btn-warning" : "btn-primary"} floating-btn`}
         data-bs-toggle="modal"
@@ -99,7 +124,6 @@ const ProductPage = () => {
         {isFiltered ? "Filters Applied" : "Filter Products"}
       </button>
 
-      {/* Filter Modal */}
       <div className="modal fade" id="filterModal" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
@@ -108,11 +132,9 @@ const ProductPage = () => {
               <button type="button" className="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div className="modal-body text-black">
-              {/* Category Filter */}
               <h5>Select Categories</h5>
               <div className="d-flex flex-wrap gap-3">
-                {allCategories.map((category, index) =>{
-                  return (
+                {allCategories.map((category, index) => (
                   <div key={index} className="form-check">
                     <input
                       type="checkbox"
@@ -126,23 +148,21 @@ const ProductPage = () => {
                       {category}
                     </label>
                   </div>
-                )})}
+                ))}
               </div>
 
-              {/* Price Range Filter */}
               <h5 className="mt-3">Price Range</h5>
               <input
                 type="range"
                 className="form-range"
                 min="0"
-                max="1000"
+                max="1000000"
                 value={priceRange}
                 onChange={(e) => setPriceRange(Number(e.target.value))}
               />
               <p>Up to: ${priceRange}</p>
             </div>
 
-            {/* Modal Footer */}
             <div className="modal-footer">
               <button className="btn btn-secondary" data-bs-dismiss="modal">
                 Close
@@ -158,7 +178,6 @@ const ProductPage = () => {
         </div>
       </div>
 
-      {/* Floating Button CSS */}
       <style>{`
         .floating-btn {
           position: fixed;
