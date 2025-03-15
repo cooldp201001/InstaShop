@@ -393,7 +393,7 @@ box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 .customerReviewCard:hover {
-  transform: translateY(-5px); /* Slight lift on hover */
+  transform: scale(1.08); /* Slight lift on hover */
   box-shadow: rgba(0, 0, 0, 0.5) 0px 8px 15px; /* Enhanced shadow on hover */
 }
 

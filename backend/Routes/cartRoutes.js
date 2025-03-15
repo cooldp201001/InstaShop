@@ -11,7 +11,7 @@ cartRouter.get("/", async (req, res) => {
   try {
     const cart = await Cart.findOne({ userId: req.user.id }).populate(
       "items.productId", // This will fetch full product details
-      "title price thumbnail brand category warrantyInformation availabilityStatus" // Only select necessary fields
+      "title id price thumbnail brand category warrantyInformation availabilityStatus" // Only select necessary fields
     );
 // console.log(cart);
     if (!cart) {
@@ -19,6 +19,7 @@ cartRouter.get("/", async (req, res) => {
     }
 
     // Transform the response to rename `productId` to `product`
+    // console.log(cart)
 const updatedCart = cart.items.map((item) => ({
   product: item.productId, // Rename the key
   quantity: item.quantity,
