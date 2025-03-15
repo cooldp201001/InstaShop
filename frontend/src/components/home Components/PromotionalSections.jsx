@@ -36,7 +36,7 @@ const PromotionalSection = () => {
    }
 
   return (
-    <section className="promotional-section my-1 ">
+    <section className="promotional-section my-1 mt-5 bg-secondary rounded mx-4 p-3 promotionalSection">
         {/* Showing error */}
         {error && <h3 className="text-dander">{error}</h3>}
       <div className="container">
@@ -46,10 +46,10 @@ const PromotionalSection = () => {
             {randomProducts.map((product, index) => (
               <div className={` position-relative carousel-item ${index === 0 ? "active" : ""}`} key={index} style={{height:"35rem"}}>
                 <img src={product.thumbnail} className="d-block mx-auto " alt={product.title} style={{ height: "30rem",}} />
-                <div className="carousel-caption d-none d-md-block position-absolute bottom-0">
+                <div className="carousel-caption d-none d-md-block position-absolute bottom-0 ">
                   <h5>{product.title}</h5>
                   <p>{product.description}</p>
-                  <a href={product.link} className="btn btn-primary">Shop Now</a>
+                  <a href={`/product/${encodeURIComponent(product.id)}`} className="btn btn-primary">Shop Now</a>
                 </div>
               </div>
             ))}
@@ -62,7 +62,13 @@ const PromotionalSection = () => {
           </button>
         </div>
       </div>
+      <style>{` .promotionalSection {
+     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+    
+`}</style>
     </section>
+  
   );
 };
 
