@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../../context/cartContext";
@@ -28,7 +28,9 @@ const ProductDetails = () => {
 
   const fetchProductDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/product/${encodeURIComponent(id)}`);
+      const response = await axios.get(
+        `http://localhost:3000/product/${encodeURIComponent(id)}`
+      );
       setProduct(response.data);
     } catch (error) {
       console.error("Error fetching product details", error);
@@ -41,7 +43,7 @@ const ProductDetails = () => {
 
   const handleAddToCart = async (product) => {
     try {
-      const token = localStorage.getItem("token"); // Get the user's token
+      // const token = localStorage.getItem("token"); // Get the user's token
       const response = await axios.post(
         "http://localhost:3000/cart",
         {
@@ -49,8 +51,7 @@ const ProductDetails = () => {
           quantity: product.quantity || 1, // Default quantity is 1 (you can adjust as needed)
         },
         {
-          withCredentials:true
-          
+          withCredentials: true,
         }
       );
 
@@ -65,8 +66,9 @@ const ProductDetails = () => {
     }
   };
   const handlePlaceOrder = async () => {
+    // setShowModal(true);
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
       const orderInfo = {
         productId: product._id,
         quantity: quantity,
@@ -81,27 +83,26 @@ const ProductDetails = () => {
         },
         phone: phone,
       };
-     const response = await axios.post(
+      console.log(orderInfo);
+      const response = await axios.post(
         "http://localhost:3000/order",
         {
           orderInfo: orderInfo,
         },
         {
-          withCredentials:true
-          ,
+          withCredentials: true,
         }
       );
       console.log(response.data);
-      setShowModal(false);
-      
-      alert("Order placed successfully");
+
+      // alert("Order placed successfully");
       // console.log(orderInfo);
     } catch (e) {
       console.error("Error placing order:", e);
       alert("Failed to place order.");
     }
   };
-  
+
   const handleAddressChange = (e) => {
     const { name, value } = e.target;
     setAddress((prevAddress) => ({
@@ -110,17 +111,27 @@ const ProductDetails = () => {
     }));
   };
 
-  
   return (
     <div className="container-fluid mt-4 text-black">
       {product ? (
         <div className="row">
           <div className="col-md-8">
-            <div id="productCarousel" className="carousel slide" data-bs-ride="carousel">
+            <div
+              id="productCarousel"
+              className="carousel slide"
+              data-bs-ride="carousel"
+            >
               <div className="carousel-inner">
                 {product.images.map((image, index) => (
-                  <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
-                    <img src={image} className="d-block w-100" alt={`${product.title} ${index + 1}`} />
+                  <div
+                    key={index}
+                    className={`carousel-item ${index === 0 ? "active" : ""}`}
+                  >
+                    <img
+                      src={image}
+                      className="d-block w-100"
+                      alt={`${product.title} ${index + 1}`}
+                    />
                   </div>
                 ))}
               </div>
@@ -130,7 +141,10 @@ const ProductDetails = () => {
                 data-bs-target="#productCarousel"
                 data-bs-slide="prev"
               >
-                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span
+                  className="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
               </button>
               <button
                 className="carousel-control-next"
@@ -138,206 +152,252 @@ const ProductDetails = () => {
                 data-bs-target="#productCarousel"
                 data-bs-slide="next"
               >
-                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                <span
+                  className="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
               </button>
             </div>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-4 fs-5">
             <h2 className="mb-3">{product.title}</h2>
             <p>{product.description}</p>
             <h4>${product.price}</h4>
-            <p className="text-success">Discount: {product.discountPercentage}%</p>
+            <p className="text-success">
+              Discount: {product.discountPercentage}%
+            </p>
             <p>Rating: ⭐ {product.rating}</p>
             <p className="text-muted">{product.category}</p>
             <p>Brand: {product.brand}</p>
-            <p>SKU: {product.sku}</p>
-            <p>Stock: {product.stock > 0 ? `${product.stock} items available` : "Out of Stock"}</p>
+            {/* <p>SKU: {product.sku}</p> */}
+            <p>
+              Stock:{" "}
+              {product.stock > 0
+                ? `${product.stock} items available`
+                : "Out of Stock"}
+            </p>
             <p>Weight: {product.weight}g</p>
-            <p>Dimensions: {product.dimensions.width} x {product.dimensions.height} x {product.dimensions.depth} cm</p>
+            <p>
+              Dimensions: {product.dimensions.width} x{" "}
+              {product.dimensions.height} x {product.dimensions.depth} cm
+            </p>
             <p>Warranty: {product.warrantyInformation}</p>
             <p>Shipping: {product.shippingInformation}</p>
             <p>Status: {product.availabilityStatus}</p>
-         
 
-            <button className="btn btn-primary me-3" onClick={() => handleAddToCart({ ...product, quantity })}>
+            <button
+              className="btn btn-primary me-3 btn-lg shadow-lg addTocartBtn"
+              onClick={() => handleAddToCart({ ...product, quantity })}
+            >
               Add to Cart
             </button>
-          
           </div>
         </div>
       ) : (
         <p>Loading product details...</p>
       )}
-      
-{/* Order Placement Form */}
-<div className="card my-5">
+
+      {/* Order Placement Form */}
+      <div className="card my-5 shadow-lg">
   <div className="card-body">
-    <h3 className="card-title">Place Order</h3>
-    <form>
+    <h3 className="card-title text-center my-2">Place Order</h3>
+    <form  onSubmit={(e) => {
+    e.preventDefault(); // Still prevent default to handle custom submission logic
+    handlePlaceOrder(); // Call order placement logic
+  }}>
+      {/* Street, Landmark, City */}
       <div className="row mb-3">
         <div className="col-md-4">
-          <label className="form-label">Street:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="street"
-            value={address.street}
-            onChange={handleAddressChange}
-          />
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control"
+              id="floatingStreet"
+              name="street"
+              value={address.street}
+              onChange={handleAddressChange}
+              placeholder="Street" required
+            />
+            <label htmlFor="floatingStreet">Street</label>
+          </div>
         </div>
         <div className="col-md-4">
-          <label className="form-label">Landmark:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="landmark"
-            value={address.landmark}
-            onChange={handleAddressChange}
-          />
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control"
+              id="floatingLandmark"
+              name="landmark"
+              value={address.landmark}
+              onChange={handleAddressChange}
+              placeholder="Landmark" required
+            />
+            <label htmlFor="floatingLandmark">Landmark</label>
+          </div>
         </div>
         <div className="col-md-4">
-          <label className="form-label">City:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="city"
-            value={address.city}
-            onChange={handleAddressChange}
-          />
-        </div>
-      </div>
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <label className="form-label">State:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="state"
-            value={address.state}
-            onChange={handleAddressChange}
-          />
-        </div>
-        <div className="col-md-4">
-          <label className="form-label">Postal Code:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="postalCode"
-            value={address.postalCode}
-            onChange={handleAddressChange}
-          />
-        </div>
-        <div className="col-md-4">
-          <label className="form-label">Country:</label>
-          <input
-            type="text"
-            className="form-control"
-            name="country"
-            value={address.country}
-            onChange={handleAddressChange}
-          />
-        </div>
-      </div>
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <label className="form-label">Phone:</label>
-          <input
-            type="tel"
-            className="form-control"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-        </div>
-        <div className="col-md-8 d-flex align-items-end">
-          <div className="row w-100">
-            <div className="col-md-6">
-              <label className="form-label">Quantity:</label>
-              <input
-                type="number"
-                className="form-control"
-                value={quantity}
-                min="1"
-                onChange={(e) => setQuantity(Number(e.target.value))}
-              />
-            </div>
-            <div className="col-md-6">
-              <h3 className="fw-bold mt-5 mb-0">
-                Total Amount: <span className="text-success">${totalAmount}</span>
-              </h3>
-            </div>
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control"
+              id="floatingCity"
+              name="city"
+              value={address.city}
+              onChange={handleAddressChange}
+              placeholder="City" required
+            />
+            <label htmlFor="floatingCity">City</label>
           </div>
         </div>
       </div>
-      <button type="button" className="btn btn-primary" onClick={handlePlaceOrder}>
+
+      {/* State, Postal Code, Country */}
+      <div className="row mb-3">
+        <div className="col-md-4">
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control"
+              id="floatingState"
+              name="state"
+              value={address.state}
+              onChange={handleAddressChange}
+              placeholder="State" required
+            />
+            <label htmlFor="floatingState">State</label>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control"
+              id="floatingPostalCode"
+              name="postalCode"
+              value={address.postalCode}
+              onChange={handleAddressChange}
+              placeholder="Postal Code" required
+            />
+            <label htmlFor="floatingPostalCode">Postal Code</label>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="form-floating">
+            <input
+              type="text"
+              className="form-control"
+              id="floatingCountry"
+              name="country"
+              value={address.country}
+              onChange={handleAddressChange}
+              placeholder="Country" required
+            />
+            <label htmlFor="floatingCountry">Country</label>
+          </div>
+        </div>
+      </div>
+
+      {/* Phone and Quantity */}
+      <div className="row mb-3">
+        <div className="col-md-4">
+          <div className="form-floating">
+            <input
+              type="tel"
+              className="form-control"
+              id="floatingPhone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Phone" required
+            />
+            <label htmlFor="floatingPhone">Phone</label>
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="form-floating">
+            <input
+              type="number"
+              className="form-control"
+              id="floatingQuantity"
+              value={quantity}
+              min="1"
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              placeholder="Quantity" required
+            />
+            <label htmlFor="floatingQuantity">Quantity</label>
+          </div>
+        </div>
+        <div className="col-md-4 d-flex align-items-center">
+          <h3 className="fw-bold m-0">
+            Total Amount: <span className="text-success">${totalAmount}</span>
+          </h3>
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <div className="text-center">
+      <button
+        type="submit"
+        className="btn btn-primary btn-lg mt-3 shadow-lg "
+    
+      >
         Place Order
       </button>
+      </div>
     </form>
   </div>
 </div>
 
 
-
       {/* Customer Reviews */}
       {product?.reviews && (
-        <div className="mt-5">
-          <h3 className="mb-4">Customer Reviews</h3>
+        <div className="mt-5 row">
+          <h3 className="mb-4 text-center">Customer Reviews</h3>
           {product.reviews.map((review, index) => (
-            <div key={index} className="card mb-4 shadow-lg border-0">
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-center mb-2">
-                  <h5 className="card-title text-primary">{review.reviewerName}</h5>
-                  <small className="text-muted">
-                    {new Date(review.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </small>
-                </div>
-                <p className="text-muted mb-2">
-                  <strong>Email:</strong> {review.reviewerEmail}
-                </p>
-                <p className="mb-2">
-                  <strong>Rating:</strong> ⭐ {review.rating}
-                </p>
-                <p className="text-dark">{review.comment}</p>
-              </div>
-            </div>
+             <div className="col-sm-6 col-md-4 col-lg-3 mb-4" key={index}>
+             <div className="card customerReviewCard h-100 shadow-sm">
+               <div className="card-body">
+                 <h5 className="card-title">{review.reviewerName}</h5>
+                 <p className="text-warning">
+                   {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                 </p>
+                 <p className="card-text">"{review.comment}"</p>
+                 <small className="text-muted">
+                   {new Date(review.date).toLocaleDateString()}
+                 </small>
+               </div>
+             </div>
+           </div>
           ))}
         </div>
       )}
 
-      {/* Booking Modal */}
-      {showModal && (
-        <div className="modal fade show d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Confirm Booking</h5>
-                <button className="btn-close" onClick={() => setShowModal(false)}></button>
-              </div>
-              <div className="modal-body">
-                <p>
-                  Are you sure you want to book <strong>{product.title}</strong>?
-                </p>
-                <p>Quantity: {quantity}</p>
-                <p>Price: ${totalAmount}</p>
-            
-              </div>
-              <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                  Cancel
-                </button>
-                <button className="btn btn-success" onClick={handlePlaceOrder}>
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-)
+    
+      <style>{`.carousel-control-next,.carousel-control-prev {
+    filter: invert(100%);
 }
+.btn {
+transition: transform 0.3s ease, box-shadow 0.3s ease;}
+    .btn:hover {
+  transform: scale(1.1); /* Scales the button by 10% on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a shadow for depth */
+}
+ .customerReviewCard {
+  border: none; /* Removes the border */
+/* Keeps a clean white background */
+box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  overflow: hidden; /* Prevents content from overflowing */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Adds hover effect */
+}
+
+.customerReviewCard:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 8px 15px; /* Enhanced shadow on hover */
+}
+
+ 
+        `}</style>
+    </div>
+  );
+};
 export default ProductDetails;
