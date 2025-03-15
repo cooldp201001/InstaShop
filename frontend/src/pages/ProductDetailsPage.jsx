@@ -136,7 +136,7 @@ const ProductDetails = () => {
                 ))}
               </div>
               <button
-                className="carousel-control-prev"
+                className="carousel-control-prev "
                 type="button"
                 data-bs-target="#productCarousel"
                 data-bs-slide="prev"
@@ -374,6 +374,8 @@ const ProductDetails = () => {
 
     
       <style>{`.carousel-control-next,.carousel-control-prev {
+    // background-color:red;
+    
     filter: invert(100%);
 }
 .btn {

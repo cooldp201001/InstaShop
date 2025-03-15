@@ -16,7 +16,7 @@ const ProfilePage = () => {
           withCredentials:true,
         });
         setUser(response.data);
-        // console.log(response.data)
+        console.log(response.data)
         setEditedUser(response.data);
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -92,19 +92,18 @@ const ProfilePage = () => {
       
           <h3 className="mt-3">
            
-            {  user?.name}
+            {  user?.firstName } { user?.lastName }
           
           </h3>
         </div>
-
-        <hr />
+  <hr />
 
         <div className="row">
           <div className="col-md-6">
-            <p>
-              <i className="fa-solid fa-envelope"></i> 
+            <p className="fs-4 ">
+              <i className="fa-solid fa-envelope"></i> Email
             </p>
-            <p className="text-muted">
+            <p className="fs-3">
               {isEditing ? (
                 <input
                   type="email"
@@ -119,10 +118,10 @@ const ProfilePage = () => {
             </p>
           </div>
           <div className="col-md-6">
-            <p>
-              <i className="fa-solid fa-phone"></i>
+            <p className="fs-4">
+              <i className="fa-solid fa-phone"></i> Phone no.
             </p>
-            <p className="text-muted">
+            <p className="fs-3">
               {isEditing ? (
                 <input
                   type="text"
@@ -137,7 +136,7 @@ const ProfilePage = () => {
             </p>
           </div>
           <div className="col-md-12 mt-3">
-            <p>
+            <p className="fs-4">
               <i className="fa-regular fa-address-card"></i>
             </p>
             {isEditing ? (
@@ -192,7 +191,7 @@ const ProfilePage = () => {
                 />
               </div>
             ) : (
-              <p className="text-muted">
+              <p className="fs-3">
                 {user?.address?.street &&
                   `${user.address.street}, ${user.address.landmark}, ${user.address.city}, ${user.address.state}, ${user.address.postalCode}, ${user.address.country}`}
                 {!user?.address?.street && "Not provided"}
