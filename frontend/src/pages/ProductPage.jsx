@@ -48,6 +48,7 @@ const ProductPage = () => {
     const fetchProducts = async () => {
         try {
             const response = await axios.get("http://localhost:3000/product");
+            throw "error in fatching product"
             setAllProducts(response.data);
             setFilteredProducts(response.data);
             getAllCategories(response.data);
@@ -106,7 +107,9 @@ const ProductPage = () => {
     }
 
     if (error) {
-        return <div className="text-danger">{error}</div>;
+        return <div class="alert alert-danger text-center fs-4 m-5 shadow-lg rounded" role="alert">
+       <i class="fa-solid fa-circle-exclamation"></i> Error in fatching the products
+      </div>;
     }
 
     return (

@@ -9,6 +9,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
+  const [loading,setLoading] = useState(true);
   const [totalAmount, setTotalAmount] = useState(0);
   const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
@@ -34,6 +35,7 @@ const ProductDetails = () => {
         `http://localhost:3000/product/${encodeURIComponent(id)}`
       );
       setProduct(response.data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching product details", error);
     }
@@ -123,55 +125,74 @@ const ProductDetails = () => {
       [name]: value,
     }));
   };
-
+  if (loading) {
+    return <div class="d-flex justify-content-center mt-5">
+    <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div> ;
+}
   return (
     <div className="container-fluid mt-4 text-black">
       {product ? (
         <div className="row">
           <div className="col-md-8">
-            <div
-              id="productCarousel"
-              className="carousel slide"
-              data-bs-ride="carousel"
-            >
-              <div className="carousel-inner">
-                {product.images.map((image, index) => (
-                  <div
-                    key={index}
-                    className={`carousel-item ${index === 0 ? "active" : ""}`}
-                  >
-                    <img
-                      src={image}
-                      className="d-block w-100"
-                      alt={`${product.title} ${index + 1}`}
-                    />
-                  </div>
-                ))}
-              </div>
-              <button
-                className="carousel-control-prev "
-                type="button"
-                data-bs-target="#productCarousel"
-                data-bs-slide="prev"
-              >
-                <span
-                  className="carousel-control-prev-icon"
-                  aria-hidden="true"
-                ></span>
-              </button>
-              <button
-                className="carousel-control-next"
-                type="button"
-                data-bs-target="#productCarousel"
-                data-bs-slide="next"
-              >
-                <span
-                  className="carousel-control-next-icon"
-                  aria-hidden="true"
-                ></span>
-              </button>
-            </div>
-          </div>
+  <div
+    id="productCarousel"
+    className="carousel slide"
+    data-bs-ride="carousel"
+  >
+    <div className="carousel-indicators ">
+      {product.images.map((_, index) => (
+        <button
+          key={index}
+          type="button"
+          data-bs-target="#productCarousel"
+          data-bs-slide-to={index}
+          className={index === 0 ? "active" : ""}
+          aria-current={index === 0 ? "true" : "false"}
+          aria-label={`Slide ${index + 1}`}
+        ></button>
+      ))}
+    </div>
+    <div className="carousel-inner">
+      {product.images.map((image, index) => (
+        <div
+          key={index}
+          className={`carousel-item ${index === 0 ? "active" : ""}`}
+        >
+          <img
+            src={image}
+            className="d-block w-100"
+            alt={`${product.title} ${index + 1}`}
+          />
+        </div>
+      ))}
+    </div>
+    <button
+      className="carousel-control-prev"
+      type="button"
+      data-bs-target="#productCarousel"
+      data-bs-slide="prev"
+    >
+      <span
+        className="carousel-control-prev-icon"
+        aria-hidden="true"
+      ></span>
+    </button>
+    <button
+      className="carousel-control-next"
+      type="button"
+      data-bs-target="#productCarousel"
+      data-bs-slide="next"
+    >
+      <span
+        className="carousel-control-next-icon"
+        aria-hidden="true"
+      ></span>
+    </button>
+  </div>
+</div>
 
           <div className="col-md-4 fs-5">
             <h2 className="mb-3">{product.title}</h2>
@@ -433,7 +454,7 @@ const ProductDetails = () => {
                 </div>
                 <div className="toast-body text-white"><h6>{toastMessage}</h6> </div>
             </div>
-      <style>{`.carousel-control-next,.carousel-control-prev {
+      <style>{`.carousel-control-next,.carousel-control-prev,.carousel-indicators {
     // background-color:red;
     
     filter: invert(100%);
