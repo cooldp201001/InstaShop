@@ -7,7 +7,7 @@ const ProductPage = () => {
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [allCategories, setAllCategories] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [priceRange, setPriceRange] = useState(1000000);
+    const [priceRange, setPriceRange] = useState(100000);
     const [isFiltered, setIsFiltered] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(true);
@@ -85,13 +85,13 @@ const ProductPage = () => {
         }
 
         setFilteredProducts(filtered);
-        const filtersApplied = selectedCategories.length > 0 || priceRange < 1000000 || searchTerm.trim() !== "";
+        const filtersApplied = selectedCategories.length > 0 || priceRange < 100000 || searchTerm.trim() !== "";
         setIsFiltered(filtersApplied);
     };
 
     const clearFilters = () => {
         setSelectedCategories([]);
-        setPriceRange(1000000);
+        setPriceRange(100000);
         setFilteredProducts(allProducts);
         setIsFiltered(false);
         setSearchTerm("");
@@ -182,7 +182,7 @@ const ProductPage = () => {
                                 type="range"
                                 className="form-range"
                                 min="0"
-                                max="1000000"
+                                max="100000"
                                 value={priceRange}
                                 onChange={(e) => setPriceRange(Number(e.target.value))}
                             />

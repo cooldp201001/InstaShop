@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { CartContext } from "../../context/cartContext";
 const RegisterPage = () => {
 
     const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ const RegisterPage = () => {
     
       const [message, setMessage] = useState("");
       const navigate = useNavigate(); 
+      const {setLoginStatus} = useContext(CartContext);
       // console.log(formData);
       // Handle form input changes
       const handleChange = (e) => {
@@ -28,10 +30,14 @@ const RegisterPage = () => {
     
         try {
           // Send POST request to your backend registration endpoint
-          const response = await axios.post("http://localhost:3000/register", formData);
+          const response = await axios.post("http://localhost:3000/register", formData,{
+            withCredentials: true,
+        });
           setMessage(response.data.message); // Display success message
+          console.log(response.data);
           // Redirect to the home page after successful registration
-       setTimeout(() =>  navigate("/login"), 1500);
+          setLoginStatus(true);
+       setTimeout(() =>  navigate("/"), 1500);
       
      
           setFormData({

@@ -31,14 +31,14 @@ loginRouter.post("/", async (req, res) => {
       
     // Set the token in an HTTP-only cookie
     res.cookie("token", token, {
-      // httpOnly: true,
+      httpOnly: true,
       secure: false,
       sameSite: "strict",
       maxAge: 24 * 60 * 60 * 1000,
     })
 
     // console.log(req.cookies);
-    res.cookie("token",token,{httpOnly:true});
+    // res.cookie("token",token,{httpOnly:true});
  
     // console.log(token)
    res.json({ message: "Login successful", token });
