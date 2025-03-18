@@ -98,7 +98,11 @@ const ProductPage = () => {
     };
 
     if (loading) {
-        return <div>Loading products...</div>;
+        return <div class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div> ;
     }
 
     if (error) {

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     fetchOrders();
@@ -27,30 +30,41 @@ const OrderHistory = () => {
   const handleCancelOrder = async (orderId) => {
     if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:3000/order/cancel/${orderId}`, {
         withCredentials:true
       });
       setOrders(orders.filter((order) => order._id !== orderId));
-      alert("Order canceled successfully");
+      setShowToast(true);
+      setToastMessage("Order cancelled successfully");
+       // Automatically hide the toast after 3 seconds
+       setTimeout(() => setShowToast(false), 3000);
+
     } catch (error) {
       console.error("Error canceling order:", error);
+
       alert("Failed to cancel order");
+
     }
   };
 
   return (
     <div className="container mt-4">
-    <h2 className="mb-4 text-center text-primary">Order History</h2>
+    <h2 className="mb-5 text-center text-success">Order History</h2>
     {loading ? (
-      <p className="text-center">Loading orders...</p>
+      <div class="d-flex justify-content-center mt-5 h-100 w-100">
+      <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
+      </div>
+    </div> 
     ) : orders.length === 0 ? (
-      <p className="text-center text-muted">No orders found.</p>
+      <div class="alert alert-danger text-center fs-4" role="alert">
+      No orders found!
+     </div>
     ) : (
       <div className="row">
         {orders.map((order) => (
-          <div className="col-md-4" key={order._id}>
-            <div className="card mb-4 shadow-sm">
+          <div className="col-md-4 orderCard-hover-effect" key={order._id}>
+            <div className="card mb-5 shadow-lg">
               <img
                 src={order.items[0]?.productId?.thumbnail}
                 alt="Product"
@@ -95,6 +109,40 @@ const OrderHistory = () => {
         ))}
       </div>
     )}
+    {/* Toast Notification for cancel order*/}
+<div
+                className={` bg-success toast position-fixed bottom-0 end-0 m-3 ${showToast ? "show" : "hide"}`}
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                // style={{ zIndex: 1055 }}
+            >
+                <div className="toast-header">
+                    <strong className="me-auto">Order Notification</strong>
+                    <button
+                        type="button"
+                        className="btn-close"
+                        aria-label="Close"
+                        onClick={() => setShowToast(false)}
+                    ></button>
+                </div>
+                <div className="toast-body text-white"> <h6>{toastMessage}</h6></div>
+            </div>
+    <style>
+      {
+        `.orderCard-hover-effect {
+        // cursor:pointer;
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.orderCard-hover-effect:hover {
+  transform: scale(1.05); /* Slight scaling effect */
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  // filter: brightness(85%); /* Slightly darkens the button */
+}
+        `
+      }
+    </style>
   </div>
   
   

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const RegisterPage = () => {
 
@@ -10,7 +11,8 @@ const RegisterPage = () => {
       });
     
       const [message, setMessage] = useState("");
-      console.log(formData);
+      const navigate = useNavigate(); 
+      // console.log(formData);
       // Handle form input changes
       const handleChange = (e) => {
         const { name, value } = e.target;
@@ -28,12 +30,17 @@ const RegisterPage = () => {
           // Send POST request to your backend registration endpoint
           const response = await axios.post("http://localhost:3000/register", formData);
           setMessage(response.data.message); // Display success message
+          // Redirect to the home page after successful registration
+       setTimeout(() =>  navigate("/login"), 1500);
+      
+     
           setFormData({
             firstName: "",
             lastName: "",
             email: "",
             password: "",
           }); // Clear form
+
         } catch (error) {
           
           setMessage(error.response?.data?.message || "Registration failed");
@@ -65,7 +72,7 @@ const RegisterPage = () => {
                     id="firstName"
                     name="firstName"
                     placeholder="First Name"
-                    value={formData.lastName}
+                    value={formData.firstName}
                     onChange={handleChange}
                     required
                   />

@@ -46,7 +46,7 @@ const Navbar = () => {
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/cart">
-                    🛒 Cart
+                     Cart
                     <span className="badge bg-primary ms-2">{cartCount}</span>
                   </Link>
                 </li>

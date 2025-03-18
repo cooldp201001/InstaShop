@@ -80,9 +80,10 @@ const ProfilePage = () => {
 
   if (loading)
     return (
-      <div className="text-center mt-5">
-        <div className="spinner-border text-primary" />
+      <div class="d-flex justify-content-center mt-5">
+      <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
       </div>
+    </div> 
     );
 
   return (

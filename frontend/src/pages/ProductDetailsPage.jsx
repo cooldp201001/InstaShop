@@ -10,6 +10,8 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
   const [address, setAddress] = useState({
     street: "",
     landmark: "",
@@ -57,8 +59,13 @@ const ProductDetails = () => {
 
       if (response.status === 200) {
         const items = response.data;
-        alert("Product added to cart!");
+        
         addToCart(items); // Update context state
+        setToastMessage("Product added to your cart!");
+        setShowToast(true);
+
+        // Automatically hide the toast after 3 seconds
+        setTimeout(() => setShowToast(false), 3000);
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
@@ -97,6 +104,12 @@ const ProductDetails = () => {
 
       // alert("Order placed successfully");
       // console.log(orderInfo);
+      setToastMessage("Order placed successfully!");
+      setShowToast(true);
+
+      // Automatically hide the toast after 3 seconds
+      setTimeout(() => setShowToast(false), 3000);
+    
     } catch (e) {
       console.error("Error placing order:", e);
       alert("Failed to place order.");
@@ -200,179 +213,226 @@ const ProductDetails = () => {
 
       {/* Order Placement Form */}
       <div className="card my-5 shadow-lg">
-  <div className="card-body">
-    <h3 className="card-title text-center my-2">Place Order</h3>
-    <form  onSubmit={(e) => {
-    e.preventDefault(); // Still prevent default to handle custom submission logic
-    handlePlaceOrder(); // Call order placement logic
-  }}>
-      {/* Street, Landmark, City */}
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              id="floatingStreet"
-              name="street"
-              value={address.street}
-              onChange={handleAddressChange}
-              placeholder="Street" required
-            />
-            <label htmlFor="floatingStreet">Street</label>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              id="floatingLandmark"
-              name="landmark"
-              value={address.landmark}
-              onChange={handleAddressChange}
-              placeholder="Landmark" required
-            />
-            <label htmlFor="floatingLandmark">Landmark</label>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              id="floatingCity"
-              name="city"
-              value={address.city}
-              onChange={handleAddressChange}
-              placeholder="City" required
-            />
-            <label htmlFor="floatingCity">City</label>
-          </div>
+        <div className="card-body">
+          <h3 className="card-title text-center my-2">Place Order
+            </h3>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // Still prevent default to handle custom submission logic
+              handlePlaceOrder(); // Call order placement logic
+            }}
+          >
+            {/* Street, Landmark, City */}
+            <div className="row mb-3">
+              <div className="col-md-4">
+                <div className="form-floating">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="floatingStreet"
+                    name="street"
+                    value={address.street}
+                    onChange={handleAddressChange}
+                    placeholder="Street"
+                    required
+                  />
+                  <label htmlFor="floatingStreet">Street</label>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="form-floating">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="floatingLandmark"
+                    name="landmark"
+                    value={address.landmark}
+                    onChange={handleAddressChange}
+                    placeholder="Landmark"
+                    required
+                  />
+                  <label htmlFor="floatingLandmark">Landmark</label>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="form-floating">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="floatingCity"
+                    name="city"
+                    value={address.city}
+                    onChange={handleAddressChange}
+                    placeholder="City"
+                    required
+                  />
+                  <label htmlFor="floatingCity">City</label>
+                </div>
+              </div>
+            </div>
+
+            {/* State, Postal Code, Country */}
+            <div className="row mb-3">
+              <div className="col-md-4">
+                <div className="form-floating">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="floatingState"
+                    name="state"
+                    value={address.state}
+                    onChange={handleAddressChange}
+                    placeholder="State"
+                    required
+                  />
+                  <label htmlFor="floatingState">State</label>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="form-floating">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="floatingPostalCode"
+                    name="postalCode"
+                    value={address.postalCode}
+                    onChange={handleAddressChange}
+                    placeholder="Postal Code"
+                    required
+                  />
+                  <label htmlFor="floatingPostalCode">Postal Code</label>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="form-floating">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="floatingCountry"
+                    name="country"
+                    value={address.country}
+                    onChange={handleAddressChange}
+                    placeholder="Country"
+                    required
+                  />
+                  <label htmlFor="floatingCountry">Country</label>
+                </div>
+              </div>
+            </div>
+
+            {/* Phone and Quantity */}
+            <div className="row mb-3">
+              <div className="col-md-4">
+                <div className="form-floating">
+                  <input
+                    type="tel"
+                    className="form-control"
+                    id="floatingPhone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Phone"
+                    required
+                  />
+                  <label htmlFor="floatingPhone">Phone</label>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="form-floating">
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="floatingQuantity"
+                    value={quantity}
+                    min="1"
+                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    placeholder="Quantity"
+                    required
+                  />
+                  <label htmlFor="floatingQuantity">Quantity</label>
+                </div>
+              </div>
+              <div className="col-md-4 d-flex align-items-center">
+                <h3 className="fw-bold m-0">
+                  Total Amount:{" "}
+                  <span className="text-success">${totalAmount}</span>
+                </h3>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="text-center">
+              <button
+                type="submit"
+                className="btn btn-primary btn-lg mt-3 shadow-lg "
+              >
+                Place Order
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-
-      {/* State, Postal Code, Country */}
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              id="floatingState"
-              name="state"
-              value={address.state}
-              onChange={handleAddressChange}
-              placeholder="State" required
-            />
-            <label htmlFor="floatingState">State</label>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              id="floatingPostalCode"
-              name="postalCode"
-              value={address.postalCode}
-              onChange={handleAddressChange}
-              placeholder="Postal Code" required
-            />
-            <label htmlFor="floatingPostalCode">Postal Code</label>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-floating">
-            <input
-              type="text"
-              className="form-control"
-              id="floatingCountry"
-              name="country"
-              value={address.country}
-              onChange={handleAddressChange}
-              placeholder="Country" required
-            />
-            <label htmlFor="floatingCountry">Country</label>
-          </div>
-        </div>
-      </div>
-
-      {/* Phone and Quantity */}
-      <div className="row mb-3">
-        <div className="col-md-4">
-          <div className="form-floating">
-            <input
-              type="tel"
-              className="form-control"
-              id="floatingPhone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Phone" required
-            />
-            <label htmlFor="floatingPhone">Phone</label>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-floating">
-            <input
-              type="number"
-              className="form-control"
-              id="floatingQuantity"
-              value={quantity}
-              min="1"
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              placeholder="Quantity" required
-            />
-            <label htmlFor="floatingQuantity">Quantity</label>
-          </div>
-        </div>
-        <div className="col-md-4 d-flex align-items-center">
-          <h3 className="fw-bold m-0">
-            Total Amount: <span className="text-success">${totalAmount}</span>
-          </h3>
-        </div>
-      </div>
-
-      {/* Submit Button */}
-      <div className="text-center">
-      <button
-        type="submit"
-        className="btn btn-primary btn-lg mt-3 shadow-lg "
-    
-      >
-        Place Order
-      </button>
-      </div>
-    </form>
-  </div>
-</div>
-
 
       {/* Customer Reviews */}
       {product?.reviews && (
         <div className="mt-5 row">
           <h3 className="mb-4 text-center">Customer Reviews</h3>
           {product.reviews.map((review, index) => (
-             <div className="col-sm-6 col-md-4 col-lg-3 mb-4" key={index}>
-             <div className="card customerReviewCard h-100 shadow-sm">
-               <div className="card-body">
-                 <h5 className="card-title">{review.reviewerName}</h5>
-                 <p className="text-warning">
-                   {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
-                 </p>
-                 <p className="card-text">"{review.comment}"</p>
-                 <small className="text-muted">
-                   {new Date(review.date).toLocaleDateString()}
-                 </small>
-               </div>
-             </div>
-           </div>
+            <div className="col-sm-6 col-md-4 col-lg-3 mb-4" key={index}>
+              <div className="card customerReviewCard h-100 shadow-sm">
+                <div className="card-body">
+                  <h5 className="card-title">{review.reviewerName}</h5>
+                  <p className="text-warning">
+                    {"★".repeat(review.rating)}
+                    {"☆".repeat(5 - review.rating)}
+                  </p>
+                  <p className="card-text">"{review.comment}"</p>
+                  <small className="text-muted">
+                    {new Date(review.date).toLocaleDateString()}
+                  </small>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       )}
-
-    
+{/* Toast Notification for add to cart*/}
+<div
+                className={` bg-success toast position-fixed bottom-0 end-0 m-3 ${showToast ? "show" : "hide"}`}
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                // style={{ zIndex: 1055 }}
+            >
+                <div className="toast-header">
+                    <strong className="me-auto">Cart Notification</strong>
+                    <button
+                        type="button"
+                        className="btn-close"
+                        aria-label="Close"
+                        onClick={() => setShowToast(false)}
+                    ></button>
+                </div>
+                <div className="toast-body">{toastMessage}</div>
+            </div>
+            {/* Toast Notification for order place */}
+<div
+                className={` bg-success toast position-fixed bottom-0 end-0 m-3 ${showToast ? "show" : "hide"}`}
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                // style={{ zIndex: 1055 }}
+            >
+                <div className="toast-header">
+                    <strong className="me-auto">Order Notification</strong>
+                    <button
+                        type="button"
+                        className="btn-close"
+                        aria-label="Close"
+                        onClick={() => setShowToast(false)}
+                    ></button>
+                </div>
+                <div className="toast-body text-white"><h6>{toastMessage}</h6> </div>
+            </div>
       <style>{`.carousel-control-next,.carousel-control-prev {
     // background-color:red;
     

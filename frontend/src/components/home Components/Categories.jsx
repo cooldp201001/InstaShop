@@ -1,22 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Categories = () => {
     const [randomCategories, setRandomCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [imageLoading, setImageLoading] = useState({}); // Track loading state for each image
 
     const fetchCategories = async () => {
         try {
             const response = await axios.get("http://localhost:3000/random/categories");
             setRandomCategories(response.data);
+
+            // Initialize image loading state
+            const initialLoadingState = response.data.reduce((acc, _, index) => {
+                acc[index] = true; // Images start in the loading state
+                return acc;
+            }, {});
+            setImageLoading(initialLoadingState);
+
             setLoading(false);
-        } catch (error) {
-            console.error("Error fetching categories:", error);
+        } catch (err) {
+            console.error("Error fetching categories:", err);
             setError("Failed to fetch categories");
             setLoading(false);
         }
+    };
+
+    const handleImageLoad = (index) => {
+        setImageLoading((prev) => ({ ...prev, [index]: false })); // Mark image as loaded
     };
 
     useEffect(() => {
@@ -24,8 +37,15 @@ const Categories = () => {
     }, []);
 
     if (loading) {
-        return <>Loading Category..</>;
+        return (
+            <div className="d-flex justify-content-center my-3">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        );
     }
+
     return (
         <div>
             <h1 className="text-center mt-4 mb-3">Categories</h1>
@@ -34,9 +54,22 @@ const Categories = () => {
                 <div className="row justify-content-center">
                     {randomCategories.map((category, index) => (
                         <div className="col-sm-6 col-md-4 col-lg-3 mb-4" key={index}>
-                            <Link  className="text-decoration-none" to="/product" state={{ selectedCategory: category.categoryName }}>
+                            <Link className="text-decoration-none" to="/product" state={{ selectedCategory: category.categoryName }}>
                                 <div className="card h-100 productCard">
-                                    <img className="card-img-top" src={category.image} alt={category.categoryName} />
+                                    {imageLoading[index] && (
+                                        <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                                            <div className="spinner-border text-secondary" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <img
+                                        className="card-img-top"
+                                        src={category.image}
+                                        alt={category.categoryName}
+                                        onLoad={() => handleImageLoad(index)} // Mark as loaded when the image finishes loading
+                                        style={{ display: imageLoading[index] ? "none" : "block" }} // Hide image while loading
+                                    />
                                     <div className="card-body">
                                         <h5 className="card-title">{category.categoryName}</h5>
                                     </div>

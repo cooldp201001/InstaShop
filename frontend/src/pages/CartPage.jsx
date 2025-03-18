@@ -22,13 +22,11 @@ const CartPage = () => {
       );
       if (!response) console.log("Error in removing the product");
       // Remove from frontend state if successful
-
-      // setCartItems((prevCart) => prevCart.filter((item) => item._id !== id));
       removeFromCart(id);
     } catch (error) {
       if (error.response?.status === 403) {
         alert("Session expired. Please log in again.");
-        localStorage.removeItem("token");
+        // localStorage.removeItem("token");
         window.location.href = "/login"; // Redirect to login page
       }
 
@@ -82,7 +80,10 @@ const CartPage = () => {
     <div className="container mt-4">
       <h2 className="mx-auto mb-4 w-25">Cart Product List</h2>
       {cartItems.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <div class="alert alert-danger text-center fs-4" role="alert">
+       Cart is Empty!
+      </div>
+      
       ) : (
         <div>
           {cartItems.map((item) => (
