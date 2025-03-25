@@ -11,7 +11,7 @@ const ProductPage = () => {
     const [isFiltered, setIsFiltered] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(false);
     const location = useLocation();
     const { state } = location;
     const selectedCategory = state?.selectedCategory; // Access selected category
@@ -48,14 +48,14 @@ const ProductPage = () => {
     const fetchProducts = async () => {
         try {
             const response = await axios.get("http://localhost:3000/product");
-            throw "error in fatching product"
+            // throw new Error("Error fetching products");
             setAllProducts(response.data);
             setFilteredProducts(response.data);
             getAllCategories(response.data);
             setLoading(false);
         } catch (error) {
             console.error("Error fetching products", error);
-            setError("Failed to fetch products");
+            setError(true);
             setLoading(false);
         }
     };
@@ -99,16 +99,16 @@ const ProductPage = () => {
     };
 
     if (loading) {
-        return <div class="d-flex justify-content-center mt-5">
-        <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
-          <span class="visually-hidden">Loading...</span>
+        return <div className="d-flex justify-content-center mt-5">
+        <div className="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
+          <span className="visually-hidden">Loading...</span>
         </div>
       </div> ;
     }
 
     if (error) {
-        return <div class="alert alert-danger text-center fs-4 m-5 shadow-lg rounded" role="alert">
-       <i class="fa-solid fa-circle-exclamation"></i> Error in fatching the products
+        return <div className="alert alert-danger text-center fs-4 m-5 shadow-lg rounded" role="alert">
+       <i className="fa-solid fa-circle-exclamation"></i> Error in fatching the products
       </div>;
     }
 

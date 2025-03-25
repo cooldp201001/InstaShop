@@ -28,7 +28,7 @@ const OrderHistory = () => {
   };
 
   const handleCancelOrder = async (orderId) => {
-    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+    // if (!window.confirm("Are you sure you want to cancel this order?")) return;
     try {
       // const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:3000/order/cancel/${orderId}`, {
@@ -50,15 +50,16 @@ const OrderHistory = () => {
 
   return (
     <div className="container mt-4">
-    <h2 className="mb-5 text-center text-success">Order History</h2>
+    <h2 className=" text-center text-secondary">Order History</h2>
+    <hr className="mb-4"/>
     {loading ? (
       <div class="d-flex justify-content-center mt-5 h-100 w-100">
       <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
       </div>
     </div> 
     ) : orders.length === 0 ? (
-      <div class="alert alert-danger text-center fs-4" role="alert">
-      No orders found!
+      <div class="alert alert-primary text-center fs-2 shadow-lg rounded" role="alert">
+       <i class="fa-solid fa-box-open"></i> No orders found!
      </div>
     ) : (
       <div className="row">

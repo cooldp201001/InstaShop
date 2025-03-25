@@ -7,12 +7,16 @@ const ProductDetails = () => {
   const { addToCart } = useContext(CartContext);
   const { id } = useParams();
   const [product, setProduct] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [showModal, setShowModal] = useState(false);
-  const [loading,setLoading] = useState(true);
+  const [orderQuantity, setOrderQuantity] = useState(1);
+  const [cartQuantity, setCartQuantity] = useState(1);
+  const [loading, setLoading] = useState(true);
+
   const [totalAmount, setTotalAmount] = useState(0);
+  const [error,setError] = useState(true);
   const [showToast, setShowToast] = useState(false);
-    const [toastMessage, setToastMessage] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastHeader, setToastHeader] = useState("");
+  const [toastType, setToastType] = useState("");
   const [address, setAddress] = useState({
     street: "",
     landmark: "",
@@ -34,16 +38,22 @@ const ProductDetails = () => {
       const response = await axios.get(
         `http://localhost:3000/product/${encodeURIComponent(id)}`
       );
+      // TODO:
+      // throw new Error('error in fetch product')
       setProduct(response.data);
       setLoading(false);
+      setError(false);
     } catch (error) {
+       setLoading(false);
+       setError(true);
       console.error("Error fetching product details", error);
     }
   };
 
   useEffect(() => {
-    if (product) setTotalAmount(Number((product.price * quantity).toFixed(2)));
-  }, [product, quantity]);
+    if (product)
+      setTotalAmount(Number((product.price * orderQuantity).toFixed(2)));
+  }, [product, orderQuantity]);
 
   const handleAddToCart = async (product) => {
     try {
@@ -52,26 +62,23 @@ const ProductDetails = () => {
         "http://localhost:3000/cart",
         {
           productId: product._id, // Send product ID and quantity to the backend
-          quantity: product.quantity || 1, // Default quantity is 1 (you can adjust as needed)
+          quantity: product.cartQuantity || 1, // Default quantity is 1 (you can adjust as needed)
         },
         {
           withCredentials: true,
         }
       );
-
       if (response.status === 200) {
         const items = response.data;
-        
+        // throw new Error("Product already exists in cart");
         addToCart(items); // Update context state
-        setToastMessage("Product added to your cart!");
-        setShowToast(true);
 
-        // Automatically hide the toast after 3 seconds
-        setTimeout(() => setShowToast(false), 3000);
+        handleActionResultToast("cart", true);
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
-      alert("Failed to add product to cart.");
+      // alert("Failed to add product to cart.");
+      handleActionResultToast("cart", false);
     }
   };
   const handlePlaceOrder = async () => {
@@ -80,7 +87,7 @@ const ProductDetails = () => {
       // const token = localStorage.getItem("token");
       const orderInfo = {
         productId: product._id,
-        quantity: quantity,
+        quantity: orderQuantity,
         price: totalAmount,
         address: {
           street: address.street,
@@ -93,6 +100,7 @@ const ProductDetails = () => {
         phone: phone,
       };
       console.log(orderInfo);
+
       const response = await axios.post(
         "http://localhost:3000/order",
         {
@@ -103,18 +111,15 @@ const ProductDetails = () => {
         }
       );
       console.log(response.data);
+    //  throw new Error('Error adding product to cart');
 
       // alert("Order placed successfully");
       // console.log(orderInfo);
-      setToastMessage("Order placed successfully!");
-      setShowToast(true);
-
-      // Automatically hide the toast after 3 seconds
-      setTimeout(() => setShowToast(false), 3000);
-    
+      handleActionResultToast("order", true);
     } catch (e) {
       console.error("Error placing order:", e);
-      alert("Failed to place order.");
+      // alert("Failed to place order.");
+      handleActionResultToast("order", false);
     }
   };
 
@@ -125,74 +130,110 @@ const ProductDetails = () => {
       [name]: value,
     }));
   };
+  // Function to handle toast update
+  const handleActionResultToast = (action, success) => {
+    if (action === "order") {
+      setToastHeader("Order Notification");
+      if (success) {
+        setToastMessage("Order placed successfully!");
+        setToastType("bg-success"); // Green for success
+      } else {
+        setToastMessage("Failed to place the order. Please try again.");
+        setToastType("bg-danger"); // Red for failure
+      }
+    } else if (action === "cart") {
+      setToastHeader("Cart Notification");
+      if (success) {
+        setToastMessage("Item added to cart successfully!");
+        setToastType("bg-success"); // Green for success
+      } else {
+        setToastMessage("Failed to add item to cart. Please try again.");
+        setToastType("bg-danger"); // Red for failure
+      }
+    }
+    setShowToast(true); // Display the toast
+    // Automatically hide the toast after 4 seconds
+    setTimeout(() => setShowToast(false), 4000);
+  };
   if (loading) {
-    return <div class="d-flex justify-content-center mt-5">
-    <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
-      <span class="visually-hidden">Loading...</span>
-    </div>
-  </div> ;
+    return (
+      <div class="d-flex justify-content-center mt-5">
+        <div
+          class="spinner-border text-primary"
+          role="status"
+          style={{ width: "4rem", height: "4rem" }}
+        >
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+  if (error) {
+    return <div className="alert alert-danger text-center fs-3 m-5 shadow-lg rounded" role="alert">
+   <i className="fa-solid fa-circle-exclamation"></i> Error in fatching the product
+  </div>;
 }
   return (
     <div className="container-fluid mt-4 text-black">
       {product ? (
         <div className="row">
           <div className="col-md-8">
-  <div
-    id="productCarousel"
-    className="carousel slide"
-    data-bs-ride="carousel"
-  >
-    <div className="carousel-indicators ">
-      {product.images.map((_, index) => (
-        <button
-          key={index}
-          type="button"
-          data-bs-target="#productCarousel"
-          data-bs-slide-to={index}
-          className={index === 0 ? "active" : ""}
-          aria-current={index === 0 ? "true" : "false"}
-          aria-label={`Slide ${index + 1}`}
-        ></button>
-      ))}
-    </div>
-    <div className="carousel-inner">
-      {product.images.map((image, index) => (
-        <div
-          key={index}
-          className={`carousel-item ${index === 0 ? "active" : ""}`}
-        >
-          <img
-            src={image}
-            className="d-block w-100"
-            alt={`${product.title} ${index + 1}`}
-          />
-        </div>
-      ))}
-    </div>
-    <button
-      className="carousel-control-prev"
-      type="button"
-      data-bs-target="#productCarousel"
-      data-bs-slide="prev"
-    >
-      <span
-        className="carousel-control-prev-icon"
-        aria-hidden="true"
-      ></span>
-    </button>
-    <button
-      className="carousel-control-next"
-      type="button"
-      data-bs-target="#productCarousel"
-      data-bs-slide="next"
-    >
-      <span
-        className="carousel-control-next-icon"
-        aria-hidden="true"
-      ></span>
-    </button>
-  </div>
-</div>
+            <div
+              id="productCarousel"
+              className="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div className="carousel-indicators ">
+                {product.images.map((_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    data-bs-target="#productCarousel"
+                    data-bs-slide-to={index}
+                    className={index === 0 ? "active" : ""}
+                    aria-current={index === 0 ? "true" : "false"}
+                    aria-label={`Slide ${index + 1}`}
+                  ></button>
+                ))}
+              </div>
+              <div className="carousel-inner">
+                {product.images.map((image, index) => (
+                  <div
+                    key={index}
+                    className={`carousel-item ${index === 0 ? "active" : ""}`}
+                  >
+                    <img
+                      src={image}
+                      className="d-block w-100"
+                      alt={`${product.title} ${index + 1}`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                className="carousel-control-prev"
+                type="button"
+                data-bs-target="#productCarousel"
+                data-bs-slide="prev"
+              >
+                <span
+                  className="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+              </button>
+              <button
+                className="carousel-control-next"
+                type="button"
+                data-bs-target="#productCarousel"
+                data-bs-slide="next"
+              >
+                <span
+                  className="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+              </button>
+            </div>
+          </div>
 
           <div className="col-md-4 fs-5">
             <h2 className="mb-3">{product.title}</h2>
@@ -219,13 +260,31 @@ const ProductDetails = () => {
             <p>Warranty: {product.warrantyInformation}</p>
             <p>Shipping: {product.shippingInformation}</p>
             <p>Status: {product.availabilityStatus}</p>
-
-            <button
-              className="btn btn-primary me-3 btn-lg shadow-lg addTocartBtn"
-              onClick={() => handleAddToCart({ ...product, quantity })}
-            >
-              Add to Cart
-            </button>
+            <div className="container">
+              <div className="row">
+                <div className="col">
+                  <div className="form-floating ">
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="floatingQuantity"
+                      value={cartQuantity}
+                      min="1"
+                      onChange={(e) => setCartQuantity(Number(e.target.value))}
+                      placeholder="Quantity"
+                      required
+                    />
+                    <label htmlFor="floatingQuantity">Quantity</label>
+                  </div>
+                </div>
+                <button
+                  className="btn btn-primary me-3 btn-lg shadow-lg addTocartBtn col"
+                  onClick={() => handleAddToCart({ ...product, cartQuantity })}
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       ) : (
@@ -235,8 +294,7 @@ const ProductDetails = () => {
       {/* Order Placement Form */}
       <div className="card my-5 shadow-lg">
         <div className="card-body">
-          <h3 className="card-title text-center my-2">Place Order
-            </h3>
+          <h3 className="card-title text-center my-2">Place Order</h3>
           <form
             onSubmit={(e) => {
               e.preventDefault(); // Still prevent default to handle custom submission logic
@@ -363,9 +421,9 @@ const ProductDetails = () => {
                     type="number"
                     className="form-control"
                     id="floatingQuantity"
-                    value={quantity}
+                    value={orderQuantity}
                     min="1"
-                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    onChange={(e) => setOrderQuantity(Number(e.target.value))}
                     placeholder="Quantity"
                     required
                   />
@@ -374,8 +432,8 @@ const ProductDetails = () => {
               </div>
               <div className="col-md-4 d-flex align-items-center">
                 <h3 className="fw-bold m-0">
-                  Total Amount:{" "}
-                  <span className="text-success">${totalAmount}</span>
+                  Total Amount:
+                  <span className="text-success"> ${totalAmount}</span>
                 </h3>
               </div>
             </div>
@@ -416,44 +474,28 @@ const ProductDetails = () => {
           ))}
         </div>
       )}
-{/* Toast Notification for add to cart*/}
-<div
-                className={` bg-success toast position-fixed bottom-0 end-0 m-3 ${showToast ? "show" : "hide"}`}
-                role="alert"
-                aria-live="assertive"
-                aria-atomic="true"
-                // style={{ zIndex: 1055 }}
-            >
-                <div className="toast-header">
-                    <strong className="me-auto">Cart Notification</strong>
-                    <button
-                        type="button"
-                        className="btn-close"
-                        aria-label="Close"
-                        onClick={() => setShowToast(false)}
-                    ></button>
-                </div>
-                <div className="toast-body">{toastMessage}</div>
-            </div>
-            {/* Toast Notification for order place */}
-<div
-                className={` bg-success toast position-fixed bottom-0 end-0 m-3 ${showToast ? "show" : "hide"}`}
-                role="alert"
-                aria-live="assertive"
-                aria-atomic="true"
-                // style={{ zIndex: 1055 }}
-            >
-                <div className="toast-header">
-                    <strong className="me-auto">Order Notification</strong>
-                    <button
-                        type="button"
-                        className="btn-close"
-                        aria-label="Close"
-                        onClick={() => setShowToast(false)}
-                    ></button>
-                </div>
-                <div className="toast-body text-white"><h6>{toastMessage}</h6> </div>
-            </div>
+      {/* Toast Notification for add to cart*/}
+      <div
+        className={` toast position-fixed text-white bottom-0 end-0 m-3  custom-shadow  rounded ${toastType} ${
+          showToast ? "show" : "hide"
+        }`}
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        // style={{ zIndex: 1055 }}
+      >
+        <div className="toast-header fs-6">
+          <strong className="me-auto">{toastHeader}</strong>
+          <button
+            type="button"
+            className="btn-close"
+            aria-label="Close"
+            onClick={() => setShowToast(false)}
+          ></button>
+        </div>
+        <div className="toast-body fs-6">{toastMessage}</div>
+      </div>
+
       <style>{`.carousel-control-next,.carousel-control-prev,.carousel-indicators {
     // background-color:red;
     
@@ -478,6 +520,9 @@ box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 8px 15px; /* Enhanced shadow on hover */
 }
 
+.custom-shadow {
+   box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+}
  
         `}</style>
     </div>

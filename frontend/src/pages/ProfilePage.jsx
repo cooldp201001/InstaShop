@@ -3,32 +3,33 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../../context/cartContext";
 const ProfilePage = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({});
- const{setLoginStatus,loginStatus} = useContext(CartContext);
+  const [error, setError] = useState(false);
+  const { setLoginStatus, loginStatus } = useContext(CartContext);
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.get("http://localhost:3000/user/profile", {
-          withCredentials:true,
+          withCredentials: true,
         });
         setUser(response.data);
-        console.log(response.data)
+        console.log(response.data);
         setEditedUser(response.data);
+        
       } catch (error) {
+        setError(true);
         console.error("Error fetching user profile:", error);
       } finally {
         setLoading(false);
       }
     };
 
-  
-      fetchUserProfile();
-    
-  },[]);
+    fetchUserProfile();
+  }, []);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -42,11 +43,14 @@ const ProfilePage = () => {
   const handleSaveEdit = async () => {
     try {
       await axios.put("http://localhost:3000/user/profile", editedUser, {
-        withCredentials:true,
+        withCredentials: true,
       });
+      // throw new Error ("Error in fatching data");
+
       setUser(editedUser);
       setIsEditing(false);
     } catch (error) {
+      alert("Eror in updating the profile");
       console.error("Error updating profile:", error);
     }
   };
@@ -70,34 +74,49 @@ const ProfilePage = () => {
 
   const handleLogout = async () => {
     try {
-    const response =  await axios.post("http://localhost:3000/logout", {},{withCredentials:true});
-        setLoginStatus(false);
-        navigate('/'); // Redirect to home page
+      const response = await axios.post(
+        "http://localhost:3000/logout",
+        {},
+        { withCredentials: true }
+      );
+      setLoginStatus(false);
+      navigate("/"); // Redirect to home page
     } catch (error) {
-        console.error("Logout failed:", error);
+      console.error("Logout failed:", error);
     }
-};
+  };
 
   if (loading)
     return (
       <div class="d-flex justify-content-center mt-5">
-      <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
+        <div
+          class="spinner-border text-primary"
+          role="status"
+          style={{ width: "4rem", height: "4rem" }}
+        ></div>
       </div>
-    </div> 
     );
+  if (error) {
+    return (
+      <div
+        className="alert alert-danger text-center fs-4 m-5 shadow-lg rounded"
+        role="alert"
+      >
+        <i className="fa-solid fa-circle-exclamation"></i> Error in fatching the
+        profile.
+      </div>
+    );
+  }
 
   return (
     <div className="container mt-5">
       <div className="card shadow-lg p-4 rounded border-0">
         <div className="text-center">
-      
           <h3 className="mt-3">
-           
-            {  user?.firstName } { user?.lastName }
-          
+            {user?.firstName} {user?.lastName}
           </h3>
         </div>
-  <hr />
+        <hr />
 
         <div className="row">
           <div className="col-md-6">
@@ -213,10 +232,15 @@ const ProfilePage = () => {
             </>
           ) : (
             <>
-              <button className="btn btn-outline-primary me-3" onClick={handleEdit}>
+              <button
+                className="btn btn-outline-primary me-3"
+                onClick={handleEdit}
+              >
                 Edit Profile
               </button>
-              <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
+              <button className="btn btn-danger" onClick={handleLogout}>
+                Logout
+              </button>
             </>
           )}
         </div>
