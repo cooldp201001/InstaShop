@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../../context/cartContext";
+import { useToast } from "../../context/ToastContext";
 
 const ProductDetails = () => {
   const { addToCart } = useContext(CartContext);
@@ -12,11 +13,9 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
 
   const [totalAmount, setTotalAmount] = useState(0);
-  const [error,setError] = useState(true);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastHeader, setToastHeader] = useState("");
-  const [toastType, setToastType] = useState("");
+  const [error, setError] = useState(true);
+  const { showToastMessage } = useToast();
+
   const [address, setAddress] = useState({
     street: "",
     landmark: "",
@@ -38,14 +37,13 @@ const ProductDetails = () => {
       const response = await axios.get(
         `http://localhost:3000/product/${encodeURIComponent(id)}`
       );
-      // TODO:
       // throw new Error('error in fetch product')
       setProduct(response.data);
       setLoading(false);
       setError(false);
     } catch (error) {
-       setLoading(false);
-       setError(true);
+      setLoading(false);
+      setError(true);
       console.error("Error fetching product details", error);
     }
   };
@@ -73,12 +71,20 @@ const ProductDetails = () => {
         // throw new Error("Product already exists in cart");
         addToCart(items); // Update context state
 
-        handleActionResultToast("cart", true);
+        showToastMessage(
+          "Item added to cart successfully!",
+          "Cart Notification"
+        );
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
       // alert("Failed to add product to cart.");
-      handleActionResultToast("cart", false);
+      // handleActionResultToast("cart", false);
+      showToastMessage(
+        "Failed to add item to cart. Please try again.",
+        "Cart Notification",
+        "bg-danger"
+      );
     }
   };
   const handlePlaceOrder = async () => {
@@ -110,16 +116,21 @@ const ProductDetails = () => {
           withCredentials: true,
         }
       );
-      console.log(response.data);
-    //  throw new Error('Error adding product to cart');
+      // console.log(response.data);
+      //  throw new Error('Error adding product to cart');
 
       // alert("Order placed successfully");
       // console.log(orderInfo);
-      handleActionResultToast("order", true);
+      showToastMessage("Order placed successfully!", "Order Notification");
     } catch (e) {
       console.error("Error placing order:", e);
       // alert("Failed to place order.");
-      handleActionResultToast("order", false);
+      // handleActionResultToast("order", false);
+      showToastMessage(
+        "Failed to placed successfully!",
+        "Order Notification",
+        "bg-danger"
+      );
     }
   };
 
@@ -131,30 +142,30 @@ const ProductDetails = () => {
     }));
   };
   // Function to handle toast update
-  const handleActionResultToast = (action, success) => {
-    if (action === "order") {
-      setToastHeader("Order Notification");
-      if (success) {
-        setToastMessage("Order placed successfully!");
-        setToastType("bg-success"); // Green for success
-      } else {
-        setToastMessage("Failed to place the order. Please try again.");
-        setToastType("bg-danger"); // Red for failure
-      }
-    } else if (action === "cart") {
-      setToastHeader("Cart Notification");
-      if (success) {
-        setToastMessage("Item added to cart successfully!");
-        setToastType("bg-success"); // Green for success
-      } else {
-        setToastMessage("Failed to add item to cart. Please try again.");
-        setToastType("bg-danger"); // Red for failure
-      }
-    }
-    setShowToast(true); // Display the toast
-    // Automatically hide the toast after 4 seconds
-    setTimeout(() => setShowToast(false), 4000);
-  };
+  // const handleActionResultToast = (action, success) => {
+  //   if (action === "order") {
+  //     setToastHeader("Order Notification");
+  //     if (success) {
+  //       setToastMessage("Order placed successfully!");
+  //       setToastType("bg-success"); // Green for success
+  //     } else {
+  //       setToastMessage("Failed to place the order. Please try again.");
+  //       setToastType("bg-danger"); // Red for failure
+  //     }
+  //   } else if (action === "cart") {
+  //     setToastHeader("Cart Notification");
+  //     if (success) {
+  //       setToastMessage("Item added to cart successfully!");
+  //       setToastType("bg-success"); // Green for success
+  //     } else {
+  //       setToastMessage("Failed to add item to cart. Please try again.");
+  //       setToastType("bg-danger"); // Red for failure
+  //     }
+  //   }
+  //   setShowToast(true); // Display the toast
+  //   // Automatically hide the toast after 4 seconds
+  //   setTimeout(() => setShowToast(false), 4000);
+  // };
   if (loading) {
     return (
       <div class="d-flex justify-content-center mt-5">
@@ -169,10 +180,16 @@ const ProductDetails = () => {
     );
   }
   if (error) {
-    return <div className="alert alert-danger text-center fs-3 m-5 shadow-lg rounded" role="alert">
-   <i className="fa-solid fa-circle-exclamation"></i> Error in fatching the product
-  </div>;
-}
+    return (
+      <div
+        className="alert alert-danger text-center fs-3 m-5 shadow-lg rounded"
+        role="alert"
+      >
+        <i className="fa-solid fa-circle-exclamation"></i> Error in fatching the
+        product
+      </div>
+    );
+  }
   return (
     <div className="container-fluid mt-4 text-black">
       {product ? (
@@ -474,27 +491,6 @@ const ProductDetails = () => {
           ))}
         </div>
       )}
-      {/* Toast Notification for add to cart*/}
-      <div
-        className={` toast position-fixed text-white bottom-0 end-0 m-3  custom-shadow  rounded ${toastType} ${
-          showToast ? "show" : "hide"
-        }`}
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-        // style={{ zIndex: 1055 }}
-      >
-        <div className="toast-header fs-6">
-          <strong className="me-auto">{toastHeader}</strong>
-          <button
-            type="button"
-            className="btn-close"
-            aria-label="Close"
-            onClick={() => setShowToast(false)}
-          ></button>
-        </div>
-        <div className="toast-body fs-6">{toastMessage}</div>
-      </div>
 
       <style>{`.carousel-control-next,.carousel-control-prev,.carousel-indicators {
     // background-color:red;

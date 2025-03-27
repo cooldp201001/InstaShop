@@ -1,38 +1,38 @@
 import axios from "axios";
 import React, { useState, useContext } from "react";
 import { CartContext } from "../../context/cartContext";
+import { useToast } from "../../context/ToastContext";
 
 const CartPage = () => {
   const { cartItems, removeFromCart, updateCartItemQuantity } = useContext(CartContext);
-  const [toastType, setToastType] = useState(""); // Determines success or error styling
-  const [showToast, setShowToast] = useState(false); // Controls visibility
-  const [toastMessage, setToastMessage] = useState(""); // Message content
-  const [toastHeader, setToastHeader] = useState(""); // Header for the toast
+
+  const { showToastMessage } = useToast();
 
   // Function to handle toast notifications
-  const handleActionResultToast = (action, success) => {
-    if (action === "cart-remove") {
-      setToastHeader("Cart Notification");
-      if (success) {
-        setToastMessage("Item removed from cart successfully!");
-        setToastType("bg-success"); // Green for success
-      } else {
-        setToastMessage("Failed to remove item from cart. Please try again.");
-        setToastType("bg-danger"); // Red for failure
-      }
-    } else if (action === "cart-update") {
-      setToastHeader("Cart Notification");
-      if (success) {
-        setToastMessage("Quantity updated successfully!");
-        setToastType("bg-success"); // Green for success
-      } else {
-        setToastMessage("Failed to update quantity. Please try again.");
-        setToastType("bg-danger"); // Red for failure
-      }
-    }
-    setShowToast(true); // Display the toast
-    setTimeout(() => setShowToast(false), 4000); // Automatically hide after 4 seconds
-  };
+
+  // const handleActionResultToast = (action, success) => {
+  //   if (action === "cart-remove") {
+  //     setToastHeader("Cart Notification");
+  //     if (success) {
+  //       setToastMessage("Item removed from cart successfully!");
+  //       setToastType("bg-success"); // Green for success
+  //     } else {
+  //       setToastMessage("Failed to remove item from cart. Please try again.");
+  //       setToastType("bg-danger"); // Red for failure
+  //     }
+  //   } else if (action === "cart-update") {
+  //     setToastHeader("Cart Notification");
+  //     if (success) {
+  //       setToastMessage("Quantity updated successfully!");
+  //       setToastType("bg-success"); // Green for success
+  //     } else {
+  //       setToastMessage("Failed to update quantity. Please try again.");
+  //       setToastType("bg-danger"); // Red for failure
+  //     }
+  //   }
+  //   setShowToast(true); // Display the toast
+  //   setTimeout(() => setShowToast(false), 4000); // Automatically hide after 4 seconds
+  // };
 
   const handleRemoveFromCart = async (id) => {
     try {
@@ -42,7 +42,8 @@ const CartPage = () => {
 
       if (response.status === 200) {
         removeFromCart(id);
-        handleActionResultToast("cart-remove", true);
+        // handleActionResultToast("cart-remove", true);
+        showToastMessage("Item removed from cart successfully!", "Cart Notification");
       }
     } catch (error) {
       if (error.response?.status === 403) {
@@ -50,7 +51,7 @@ const CartPage = () => {
         window.location.href = "/login";
       } else {
         console.error("Error removing item:", error);
-        handleActionResultToast("cart-remove", false);
+        showToastMessage("Failed to remove item from cart. Please try again.", "Cart Notification", "bg-danger");
       }
     }
   };
@@ -64,14 +65,14 @@ const CartPage = () => {
         { quantity: newQuantity },
         { withCredentials: true }
       );
-
+          // throw new Error('Network Error');
       if (response.status === 200) {
         updateCartItemQuantity(id, newQuantity);
-        handleActionResultToast("cart-update", true);
+        showToastMessage("Quantity updated successfully!", "Cart Notification");
       }
     } catch (error) {
       console.error("Error updating quantity:", error.response?.data);
-      handleActionResultToast("cart-update", false);
+      showToastMessage("Failed to update quantity. Please try again.", "Cart Notification", "bg-danger");
     }
   };
 
@@ -172,26 +173,7 @@ const CartPage = () => {
         </div>
       )}
 
-      {/* Toast Notification */}
-      <div
-        className={`toast position-fixed text-white bottom-0 end-0 m-3 custom-shadow rounded ${toastType} ${
-          showToast ? "show" : "hide"
-        }`}
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-      >
-        <div className="toast-header fs-6">
-          <strong className="me-auto">{toastHeader}</strong>
-          <button
-            type="button"
-            className="btn-close"
-            aria-label="Close"
-            onClick={() => setShowToast(false)}
-          ></button>
-        </div>
-        <div className="toast-body fs-6">{toastMessage}</div>
-      </div>
+  
 
       <style>{`
       .btn-hover-effect {

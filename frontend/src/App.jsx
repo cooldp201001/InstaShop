@@ -11,12 +11,16 @@ import LoginPage from "./pages/LoginPage";
 import OrderHistory from "./pages/OrderHistory";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { CartProvider } from "../context/cartContext";
+import ToastNotification from "./components/ToastNotification";
+import { ToastProvider } from "../context/ToastContext";
 function App() {
     return (
+        <ToastProvider>
         <BrowserRouter>
-            <CartProvider> {/* Wrap your app with CartProvider */}
+            <CartProvider> 
                 <Navbar />
                 <Routes>
+
                     <Route path="/" element={<HomePage />} />
                     <Route path="/product" element={<ProductPage />} />
                     <Route path="/product/:id" element={<ProtectedRoute  element={<ProductDetailsPage />} />}
@@ -36,8 +40,10 @@ function App() {
                         element={<ProtectedRoute element={<OrderHistory />} />}
                     />
                 </Routes>
-            </CartProvider>
+             </CartProvider> 
+             <ToastNotification/>
         </BrowserRouter>
+        </ToastProvider>
     );
 }
 

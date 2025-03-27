@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../../context/cartContext";
+import { useToast } from "../../context/ToastContext";
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -9,6 +10,7 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({});
   const [error, setError] = useState(false);
+    const { showToastMessage } = useToast();
   const { setLoginStatus, loginStatus } = useContext(CartContext);
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -22,6 +24,7 @@ const ProfilePage = () => {
         
       } catch (error) {
         setError(true);
+    
         console.error("Error fetching user profile:", error);
       } finally {
         setLoading(false);
@@ -45,12 +48,12 @@ const ProfilePage = () => {
       await axios.put("http://localhost:3000/user/profile", editedUser, {
         withCredentials: true,
       });
-      // throw new Error ("Error in fatching data");
-
+    //  throw new Error ('error in profile update')
       setUser(editedUser);
       setIsEditing(false);
+      showToastMessage("Profile update successfully!", "Profile Notification");
     } catch (error) {
-      alert("Eror in updating the profile");
+      showToastMessage("Failed to update the Profile. Please try again.", "Profile Notification","bg-danger");
       console.error("Error updating profile:", error);
     }
   };
@@ -120,10 +123,10 @@ const ProfilePage = () => {
 
         <div className="row">
           <div className="col-md-6">
-            <p className="fs-4 ">
+            <p className="fs-4 text-secondary">
               <i className="fa-solid fa-envelope"></i> Email
             </p>
-            <p className="fs-3">
+            <p className="fs-4 ">
               {isEditing ? (
                 <input
                   type="email"
@@ -138,10 +141,10 @@ const ProfilePage = () => {
             </p>
           </div>
           <div className="col-md-6">
-            <p className="fs-4">
+            <p className="fs-4 text-secondary">
               <i className="fa-solid fa-phone"></i> Phone no.
             </p>
-            <p className="fs-3">
+            <p className="fs-4">
               {isEditing ? (
                 <input
                   type="text"
@@ -156,8 +159,8 @@ const ProfilePage = () => {
             </p>
           </div>
           <div className="col-md-12 mt-3">
-            <p className="fs-4">
-              <i className="fa-regular fa-address-card"></i>
+            <p className="fs-4 text-secondary">
+              <i className="fa-regular fa-address-card"></i> Address
             </p>
             {isEditing ? (
               <div>

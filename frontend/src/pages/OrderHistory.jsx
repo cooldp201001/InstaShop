@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { useToast } from "../../context/ToastContext";
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
+  const { showToastMessage } = useToast();
 
   useEffect(() => {
     fetchOrders();
@@ -14,7 +13,6 @@ const OrderHistory = () => {
 
   const fetchOrders = async () => {
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.get("http://localhost:3000/order/history", {
         withCredentials:true
       });
@@ -28,23 +26,22 @@ const OrderHistory = () => {
   };
 
   const handleCancelOrder = async (orderId) => {
-    // if (!window.confirm("Are you sure you want to cancel this order?")) return;
+
     try {
       // const token = localStorage.getItem("token");
       await axios.delete(`http://localhost:3000/order/cancel/${orderId}`, {
         withCredentials:true
       });
+      // throw new Error ("failed to cancel")
       setOrders(orders.filter((order) => order._id !== orderId));
-      setShowToast(true);
-      setToastMessage("Order cancelled successfully");
-       // Automatically hide the toast after 3 seconds
-       setTimeout(() => setShowToast(false), 3000);
-
+     
+      showToastMessage("order Cancel successfully!", "Order Notification");
+      
     } catch (error) {
       console.error("Error canceling order:", error);
-
-      alert("Failed to cancel order");
-
+      
+      showToastMessage("Failed to cancel Order. Please try again", "Order Notification","bg-danger");
+     
     }
   };
 
@@ -110,25 +107,7 @@ const OrderHistory = () => {
         ))}
       </div>
     )}
-    {/* Toast Notification for cancel order*/}
-<div
-                className={` bg-success toast position-fixed bottom-0 end-0 m-3 ${showToast ? "show" : "hide"}`}
-                role="alert"
-                aria-live="assertive"
-                aria-atomic="true"
-                // style={{ zIndex: 1055 }}
-            >
-                <div className="toast-header">
-                    <strong className="me-auto">Order Notification</strong>
-                    <button
-                        type="button"
-                        className="btn-close"
-                        aria-label="Close"
-                        onClick={() => setShowToast(false)}
-                    ></button>
-                </div>
-                <div className="toast-body text-white"> <h6>{toastMessage}</h6></div>
-            </div>
+
     <style>
       {
         `.orderCard-hover-effect {
