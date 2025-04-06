@@ -7,7 +7,7 @@ const Navbar = () => {
   const {cartCount,loginStatus} = useContext(CartContext);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-lg">
     
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">

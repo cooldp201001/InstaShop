@@ -7,10 +7,11 @@ const ToastNotification = () => {
 
   return (
     <div
-      className={`toast position-fixed bottom-0 end-0 m-4 ${showToast ? 'show' : 'hide'} ${toastBackgroundColor}` }
+      className={`toast position-fixed bottom-0 end-0 mb-4 me-1 ${showToast ? 'show' : 'hide'} ${toastBackgroundColor}` }
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
+      style={{zIndex:"1200"}}
      
     >
       <div className="toast-header ">

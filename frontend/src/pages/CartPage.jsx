@@ -88,7 +88,7 @@ const CartPage = () => {
 
   return (
     <div className="container-fluid mt-4">
-      <h2 className="mx-auto  w-25 text-center text-secondary">Cart Product List</h2>
+      <h2 className="mx-auto   text-center text-secondary">Cart Product List</h2>
       <hr className="mb-4"/>
       {cartItems.length === 0 ? (
         <div className="alert alert-primary shadow-lg rounded text-center fs-2 " role="alert">
@@ -145,7 +145,7 @@ const CartPage = () => {
                     className="btn btn-danger w-50 btn-hover-effect"
                     onClick={() => handleRemoveFromCart(item._id)}
                   >
-                    Remove from Cart
+                    Remove product
                   </button>
                   <button className="btn btn-info w-50 btn-hover-effect">
                     <a
@@ -156,7 +156,7 @@ const CartPage = () => {
                     </a>
                   </button>
                   <div>
-                    <h4>
+                    <h4 className="text-secondary">
                       Total Amount: $
                       {handleTotalAmount(item.product.price, item.quantity)}
                     </h4>
@@ -166,8 +166,8 @@ const CartPage = () => {
             </div>
           ))}
           <div className="my-4 text-end">
-            <h3>
-              Total Cart Amount: <b>${handleCartTotalAmount().toFixed(2)}</b>
+            <h3 className="text-secondary">
+              Total Cart Amount: <span className="text-black">${handleCartTotalAmount().toFixed(2)}</span>
             </h3>
           </div>
         </div>

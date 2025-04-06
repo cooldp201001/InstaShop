@@ -309,7 +309,7 @@ const ProductDetails = () => {
       )}
 
       {/* Order Placement Form */}
-      <div className="card my-5 shadow-lg">
+      <div className="card my-5 shadow-lg orderPlaceForm">
         <div className="card-body">
           <h3 className="card-title text-center my-2">Place Order</h3>
           <form
@@ -320,8 +320,8 @@ const ProductDetails = () => {
           >
             {/* Street, Landmark, City */}
             <div className="row mb-3">
-              <div className="col-md-4">
-                <div className="form-floating">
+              <div className="col-md-4 mb-2">
+                <div className="form-floating shadow">
                   <input
                     type="text"
                     className="form-control"
@@ -335,8 +335,8 @@ const ProductDetails = () => {
                   <label htmlFor="floatingStreet">Street</label>
                 </div>
               </div>
-              <div className="col-md-4">
-                <div className="form-floating">
+              <div className="col-md-4  mb-2">
+                <div className="form-floating shadow">
                   <input
                     type="text"
                     className="form-control"
@@ -350,8 +350,8 @@ const ProductDetails = () => {
                   <label htmlFor="floatingLandmark">Landmark</label>
                 </div>
               </div>
-              <div className="col-md-4">
-                <div className="form-floating">
+              <div className="col-md-4  ">
+                <div className="form-floating shadow">
                   <input
                     type="text"
                     className="form-control"
@@ -369,8 +369,8 @@ const ProductDetails = () => {
 
             {/* State, Postal Code, Country */}
             <div className="row mb-3">
-              <div className="col-md-4">
-                <div className="form-floating">
+              <div className="col-md-4 mb-2">
+                <div className="form-floating shadow">
                   <input
                     type="text"
                     className="form-control"
@@ -381,11 +381,11 @@ const ProductDetails = () => {
                     placeholder="State"
                     required
                   />
-                  <label htmlFor="floatingState">State</label>
+                  <label htmlFor="floatingState" >State</label>
                 </div>
               </div>
-              <div className="col-md-4">
-                <div className="form-floating">
+              <div className="col-md-4 mb-2">
+                <div className="form-floating shadow">
                   <input
                     type="text"
                     className="form-control"
@@ -399,8 +399,8 @@ const ProductDetails = () => {
                   <label htmlFor="floatingPostalCode">Postal Code</label>
                 </div>
               </div>
-              <div className="col-md-4">
-                <div className="form-floating">
+              <div className="col-md-4 mb-2">
+                <div className="form-floating shadow">
                   <input
                     type="text"
                     className="form-control"
@@ -418,8 +418,8 @@ const ProductDetails = () => {
 
             {/* Phone and Quantity */}
             <div className="row mb-3">
-              <div className="col-md-4">
-                <div className="form-floating">
+              <div className="col-md-4 mb-2">
+                <div className="form-floating shadow">
                   <input
                     type="tel"
                     className="form-control"
@@ -432,11 +432,11 @@ const ProductDetails = () => {
                   <label htmlFor="floatingPhone">Phone</label>
                 </div>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-4 mb-2">
                 <div className="form-floating">
                   <input
                     type="number"
-                    className="form-control"
+                    className="form-control shadow"
                     id="floatingQuantity"
                     value={orderQuantity}
                     min="1"
@@ -520,6 +520,9 @@ box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 }
  
+.orderPlaceForm label {
+ color:grey
+}
         `}</style>
     </div>
   );

@@ -23,7 +23,7 @@ const CustomerReviews = () => {
     <div className="row">
       {reviews.flatMap((product) => product.reviews).map((review, index) => (
         <div className="col-sm-6 col-md-4 col-lg-3 mb-4" key={index}>
-          <div className="card customerReviewCard h-100 shadow-sm">
+          <div className="card customerReviewCard h-100 shadow-lg">
             <div className="card-body">
               <h5 className="card-title">{review.reviewerName}</h5>
               <p className="text-warning">
@@ -49,7 +49,6 @@ box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 
 .customerReviewCard:hover {
   transform: scale(1.08); /* Slight lift on hover */
-  box-shadow: rgba(0, 0, 0, 0.5) 0px 8px 15px; /* Enhanced shadow on hover */
 }
 
 .card-body {

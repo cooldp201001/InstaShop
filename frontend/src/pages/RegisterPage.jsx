@@ -1,76 +1,75 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../../context/cartContext";
 const RegisterPage = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
 
-    const [formData, setFormData] = useState({
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  const { setLoginStatus } = useContext(CartContext);
+  // console.log(formData);
+  // Handle form input changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page reload
+
+    try {
+      // Send POST request to your backend registration endpoint
+      const response = await axios.post(
+        "http://localhost:3000/register",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
+      setMessage(response.data.message); // Display success message
+      console.log(response.data);
+      // Redirect to the home page after successful registration
+      setLoginStatus(true);
+      setTimeout(() => navigate("/"), 1500);
+
+      setFormData({
         firstName: "",
         lastName: "",
         email: "",
         password: "",
-      });
-    
-      const [message, setMessage] = useState("");
-      const navigate = useNavigate(); 
-      const {setLoginStatus} = useContext(CartContext);
-      // console.log(formData);
-      // Handle form input changes
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-          ...prevData,
-          [name]: value,
-        }));
-      };
-    
-      // Handle form submission
-      const handleSubmit = async (e) => {
-     e.preventDefault(); // Prevent page reload
-    
-        try {
-          // Send POST request to your backend registration endpoint
-          const response = await axios.post("http://localhost:3000/register", formData,{
-            withCredentials: true,
-        });
-          setMessage(response.data.message); // Display success message
-          console.log(response.data);
-          // Redirect to the home page after successful registration
-          setLoginStatus(true);
-       setTimeout(() =>  navigate("/"), 1500);
-      
-     
-          setFormData({
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-          }); // Clear form
-
-        } catch (error) {
-          
-          setMessage(error.response?.data?.message || "Registration failed");
-          // console.log(error)
-        }   
-      };
-   
-    
+      }); // Clear form
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Registration failed");
+      // console.log(error)
+    }
+  };
 
   return (
-    <>
- <section className="w-50 mx-auto mt-4">
-  <div className="container">
-    <div className="card border-light-subtle shadow-sm">
-      <div className="row">
-        <div className="card-body p-3">
-          <div className="mb-4 text-center">
-            <h4 className="mb-5">Registration</h4>
-  {message && <div className="alert alert-info">{message}</div>}
-
+    <><div className="container mt-5 ">
+  <div className="card border-light-subtle p-4 bg-transparent" >
+    <div className=" row justify-content-center ">
+      <div className="col-12 col-md-8 bg-light shadow-lg rounded col-lg-6">
+        <div className="card-body ">
+          <div className="my-4 text-center">
+            <h3 className="mb-3 text-secondary">Registration</h3>
+            { message && <div className="alert alert-info">{message}</div>}
           </div>
-          <form onSubmit={handleSubmit} encType="application/x-www-form-urlencoded"  >
+          <form
+            onSubmit={handleSubmit}
+            encType="application/x-www-form-urlencoded"
+          >
             <div className="row gy-3 gy-md-4 overflow-hidden">
-              <div className="col-6">
+              <div className="col-12 col-md-6">
                 <div className="form-floating">
                   <input
                     type="text"
@@ -82,10 +81,12 @@ const RegisterPage = () => {
                     onChange={handleChange}
                     required
                   />
-                  <label htmlFor="firstName">First Name <span className="text-danger">*</span></label>
+                  <label htmlFor="firstName">
+                    First Name <span className="text-danger">*</span>
+                  </label>
                 </div>
               </div>
-              <div className="col-6">
+              <div className="col-12 col-md-6">
                 <div className="form-floating">
                   <input
                     type="text"
@@ -94,10 +95,12 @@ const RegisterPage = () => {
                     name="lastName"
                     placeholder="Last Name"
                     value={formData.lastName}
-            onChange={handleChange}
+                    onChange={handleChange}
                     required
                   />
-                  <label htmlFor="lastName">Last Name <span className="text-danger">*</span></label>
+                  <label htmlFor="lastName">
+                    Last Name <span className="text-danger">*</span>
+                  </label>
                 </div>
               </div>
               <div className="col-12">
@@ -109,10 +112,12 @@ const RegisterPage = () => {
                     name="email"
                     placeholder="name@example.com"
                     value={formData.email}
-            onChange={handleChange}
+                    onChange={handleChange}
                     required
                   />
-                  <label htmlFor="email">Email <span className="text-danger">*</span></label>
+                  <label htmlFor="email">
+                    Email <span className="text-danger">*</span>
+                  </label>
                 </div>
               </div>
               <div className="col-12">
@@ -124,10 +129,12 @@ const RegisterPage = () => {
                     name="password"
                     placeholder="Password"
                     value={formData.password}
-            onChange={handleChange}
+                    onChange={handleChange}
                     required
                   />
-                  <label htmlFor="password">Password <span className="text-danger">*</span></label>
+                  <label htmlFor="password">
+                    Password <span className="text-danger">*</span>
+                  </label>
                 </div>
               </div>
               <div className="col-12">
@@ -154,9 +161,9 @@ const RegisterPage = () => {
                 </div>
               </div>
               <div className="col-12">
-                <div className="d-grid">
+                <div className="d-grid ">
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-primary w-50 mx-auto" // Make button full width on all screens
                     type="submit"
                   >
                     Sign up
@@ -183,10 +190,10 @@ const RegisterPage = () => {
       </div>
     </div>
   </div>
-</section>
-
-  </>
   
+</div>
+     
+    </>
   );
 };
 

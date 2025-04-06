@@ -91,7 +91,7 @@ const OrderHistory = () => {
                 </p>
                 {order.status === "Pending" && (
                   <button
-                    className="btn btn-danger"
+                    className="btn btn-danger shadow-lg "
                     onClick={() => handleCancelOrder(order._id)}
                     aria-label="Cancel order"
                     data-bs-toggle="tooltip"
