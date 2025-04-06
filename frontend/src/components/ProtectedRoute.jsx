@@ -29,8 +29,8 @@ const ProtectedRoute = ({ element, ...rest }) => {
 
     if (isLoading) {
         // You can replace this with a better loading indicator
-        return <div class="d-flex justify-content-center mt-5">
-        <div class="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
+        return <div className="d-flex justify-content-center mt-5">
+        <div className="spinner-border text-primary" role="status" style={{width: "4rem", height: "4rem"}} >
         </div>
       </div> ;
     }

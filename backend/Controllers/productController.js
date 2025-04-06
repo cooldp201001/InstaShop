@@ -22,15 +22,20 @@ const getAllProducts = async (req, res) => {
    
 }
  
-// Get specific product by the prduct name
+// Get specific product by the product ID
 const getSpecificProduct = async (req, res) => {
-    try{
-         const product = await ProductCollection.findOne({id:req.params.id});
-         res.json(product);
+    try {
+        const product = await ProductCollection.findOne({ id: req.params.id });
+
+        if (!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.json(product);
+    } catch (e) {
+        console.error("Error fetching product:", e);
+        res.status(500).json({ message: "Server error while fetching product" });
     }
-    catch(e){
-        res.status(500).json({message: "Error fetching product"});
-    }
-}
+};
 
 module.exports = {getAllCategories,getAllProducts,getSpecificProduct};

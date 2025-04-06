@@ -11,6 +11,7 @@ const ProductDetails = () => {
   const [orderQuantity, setOrderQuantity] = useState(1);
   const [cartQuantity, setCartQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [error, setError] = useState(true);
@@ -168,13 +169,13 @@ const ProductDetails = () => {
   // };
   if (loading) {
     return (
-      <div class="d-flex justify-content-center mt-5">
+      <div className="d-flex justify-content-center mt-5">
         <div
-          class="spinner-border text-primary"
+          className="spinner-border text-primary"
           role="status"
           style={{ width: "4rem", height: "4rem" }}
         >
-          <span class="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Loading...</span>
         </div>
       </div>
     );

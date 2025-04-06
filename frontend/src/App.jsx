@@ -13,6 +13,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { CartProvider } from "../context/cartContext";
 import ToastNotification from "./components/ToastNotification";
 import { ToastProvider } from "../context/ToastContext";
+import NotFoundPage from "./pages/NotFoundPage";
 function App() {
     return (
         <ToastProvider>
@@ -39,6 +40,8 @@ function App() {
                         path="/order"
                         element={<ProtectedRoute element={<OrderHistory />} />}
                     />
+
+                    <Route path="*" element={<NotFoundPage/>} />
                 </Routes>
              </CartProvider> 
              <ToastNotification/>
