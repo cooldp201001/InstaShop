@@ -1,18 +1,25 @@
 // Toast.js
-import React from 'react';
-import { useToast } from '../../context/ToastContext';
+import React from "react";
+import { useToast } from "../../context/ToastContext";
 
 const ToastNotification = () => {
-  const { toastMessage, toastHeader, toastBackgroundColor, showToast, setShowToast } = useToast();
+  const {
+    toastMessage,
+    toastHeader,
+    toastBackgroundColor,
+    showToast,
+    setShowToast,
+  } = useToast();
 
   return (
     <div
-      className={`toast position-fixed bottom-0 end-0 mb-4 me-1 ${showToast ? 'show' : 'hide'} ${toastBackgroundColor}` }
+      className={`toast position-fixed bottom-0 end-0 mb-4 me-1 ${
+        showToast ? "show" : "hide"
+      } ${toastBackgroundColor}`}
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
-      style={{zIndex:"1200"}}
-     
+      style={{ zIndex: "1200" }}
     >
       <div className="toast-header ">
         <strong className="me-auto">{toastHeader}</strong>

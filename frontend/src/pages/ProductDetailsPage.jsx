@@ -11,7 +11,6 @@ const ProductDetails = () => {
   const [orderQuantity, setOrderQuantity] = useState(1);
   const [cartQuantity, setCartQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
 
   const [totalAmount, setTotalAmount] = useState(0);
   const [error, setError] = useState(true);
@@ -27,41 +26,42 @@ const ProductDetails = () => {
   });
   const [phone, setPhone] = useState("");
 
+  // Fetching product details from API
   useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3000/product/${encodeURIComponent(id)}`
+        );
+        // throw new Error('error in fetch product')
+        setProduct(response.data);
+        setLoading(false);
+        setError(false);
+      } catch (error) {
+        setLoading(false);
+        setError(true);
+        console.error("Error fetching product details", error);
+      }
+    };
     if (id) {
       fetchProductDetails();
     }
   }, [id]);
 
-  const fetchProductDetails = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/product/${encodeURIComponent(id)}`
-      );
-      // throw new Error('error in fetch product')
-      setProduct(response.data);
-      setLoading(false);
-      setError(false);
-    } catch (error) {
-      setLoading(false);
-      setError(true);
-      console.error("Error fetching product details", error);
-    }
-  };
-
+  // Calculating the total amount of the product
   useEffect(() => {
     if (product)
       setTotalAmount(Number((product.price * orderQuantity).toFixed(2)));
   }, [product, orderQuantity]);
 
+  // Addting product into the cart
   const handleAddToCart = async (product) => {
     try {
-      // const token = localStorage.getItem("token"); // Get the user's token
       const response = await axios.post(
         "http://localhost:3000/cart",
         {
-          productId: product._id, // Send product ID and quantity to the backend
-          quantity: product.cartQuantity || 1, // Default quantity is 1 (you can adjust as needed)
+          productId: product._id,
+          quantity: product.cartQuantity || 1,
         },
         {
           withCredentials: true,
@@ -79,8 +79,7 @@ const ProductDetails = () => {
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
-      // alert("Failed to add product to cart.");
-      // handleActionResultToast("cart", false);
+
       showToastMessage(
         "Failed to add item to cart. Please try again.",
         "Cart Notification",
@@ -88,10 +87,10 @@ const ProductDetails = () => {
       );
     }
   };
+
+  // Placing order
   const handlePlaceOrder = async () => {
-    // setShowModal(true);
     try {
-      // const token = localStorage.getItem("token");
       const orderInfo = {
         productId: product._id,
         quantity: orderQuantity,
@@ -117,16 +116,11 @@ const ProductDetails = () => {
           withCredentials: true,
         }
       );
-      // console.log(response.data);
-      //  throw new Error('Error adding product to cart');
 
-      // alert("Order placed successfully");
-      // console.log(orderInfo);
       showToastMessage("Order placed successfully!", "Order Notification");
     } catch (e) {
       console.error("Error placing order:", e);
-      // alert("Failed to place order.");
-      // handleActionResultToast("order", false);
+
       showToastMessage(
         "Failed to placed successfully!",
         "Order Notification",
@@ -142,31 +136,8 @@ const ProductDetails = () => {
       [name]: value,
     }));
   };
-  // Function to handle toast update
-  // const handleActionResultToast = (action, success) => {
-  //   if (action === "order") {
-  //     setToastHeader("Order Notification");
-  //     if (success) {
-  //       setToastMessage("Order placed successfully!");
-  //       setToastType("bg-success"); // Green for success
-  //     } else {
-  //       setToastMessage("Failed to place the order. Please try again.");
-  //       setToastType("bg-danger"); // Red for failure
-  //     }
-  //   } else if (action === "cart") {
-  //     setToastHeader("Cart Notification");
-  //     if (success) {
-  //       setToastMessage("Item added to cart successfully!");
-  //       setToastType("bg-success"); // Green for success
-  //     } else {
-  //       setToastMessage("Failed to add item to cart. Please try again.");
-  //       setToastType("bg-danger"); // Red for failure
-  //     }
-  //   }
-  //   setShowToast(true); // Display the toast
-  //   // Automatically hide the toast after 4 seconds
-  //   setTimeout(() => setShowToast(false), 4000);
-  // };
+
+  // showing loading until product details is fetching
   if (loading) {
     return (
       <div className="d-flex justify-content-center mt-5">
@@ -180,6 +151,7 @@ const ProductDetails = () => {
       </div>
     );
   }
+  // error message if the product not found.
   if (error) {
     return (
       <div
@@ -296,7 +268,7 @@ const ProductDetails = () => {
                   </div>
                 </div>
                 <button
-                  className="btn btn-primary me-3 btn-lg shadow-lg addTocartBtn col"
+                  className="btn btn-primary  btn-lg shadow-lg addTocartBtn  col"
                   onClick={() => handleAddToCart({ ...product, cartQuantity })}
                 >
                   Add to Cart
@@ -315,8 +287,8 @@ const ProductDetails = () => {
           <h3 className="card-title text-center my-2">Place Order</h3>
           <form
             onSubmit={(e) => {
-              e.preventDefault(); // Still prevent default to handle custom submission logic
-              handlePlaceOrder(); // Call order placement logic
+              e.preventDefault();
+              handlePlaceOrder();
             }}
           >
             {/* Street, Landmark, City */}
@@ -382,7 +354,7 @@ const ProductDetails = () => {
                     placeholder="State"
                     required
                   />
-                  <label htmlFor="floatingState" >State</label>
+                  <label htmlFor="floatingState">State</label>
                 </div>
               </div>
               <div className="col-md-4 mb-2">
@@ -493,38 +465,6 @@ const ProductDetails = () => {
         </div>
       )}
 
-      <style>{`.carousel-control-next,.carousel-control-prev,.carousel-indicators {
-    // background-color:red;
-    
-    filter: invert(100%);
-}
-.btn {
-transition: transform 0.3s ease, box-shadow 0.3s ease;}
-    .btn:hover {
-  transform: scale(1.1); /* Scales the button by 10% on hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a shadow for depth */
-}
- .customerReviewCard {
-  border: none; /* Removes the border */
-/* Keeps a clean white background */
-box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-  overflow: hidden; /* Prevents content from overflowing */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Adds hover effect */
-}
-
-.customerReviewCard:hover {
-  transform: scale(1.08); /* Slight lift on hover */
-  box-shadow: rgba(0, 0, 0, 0.5) 0px 8px 15px; /* Enhanced shadow on hover */
-}
-
-.custom-shadow {
-   box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-}
- 
-.orderPlaceForm label {
- color:grey
-}
-        `}</style>
     </div>
   );
 };

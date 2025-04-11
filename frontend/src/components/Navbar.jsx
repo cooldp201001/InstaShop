@@ -3,15 +3,17 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { CartContext } from "../../context/cartContext";
 const Navbar = () => {
-
-  const {cartCount,loginStatus} = useContext(CartContext);
+  const { cartCount, loginStatus } = useContext(CartContext);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-lg">
-    
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
-  <img src="/logo/instashop-logo.png" style={{width:'10rem',height:'2rem'}} alt="Insta Shop" />
+          <img
+            src="/logo/instashop-logo.png"
+            style={{ width: "10rem", height: "2rem" }}
+            alt="Insta Shop"
+          />
         </Link>
         <button
           className="navbar-toggler"
@@ -37,7 +39,7 @@ const Navbar = () => {
               </Link>
             </li>
 
-             {loginStatus ? (
+            {loginStatus ? (
               <>
                 <li className="nav-item">
                   <Link className="nav-link" to="/profile">
@@ -46,7 +48,7 @@ const Navbar = () => {
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/cart">
-                     Cart
+                    Cart
                     <span className="badge bg-primary ms-2">{cartCount}</span>
                   </Link>
                 </li>
@@ -59,7 +61,7 @@ const Navbar = () => {
             ) : (
               <li className="nav-item">
                 <Link className="nav-link text-bg-success rounded" to="/login">
-                Login
+                  Login
                 </Link>
               </li>
             )}

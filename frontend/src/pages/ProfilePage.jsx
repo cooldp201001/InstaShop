@@ -10,8 +10,10 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({});
   const [error, setError] = useState(false);
-    const { showToastMessage } = useToast();
+  const { showToastMessage } = useToast();
   const { setLoginStatus, loginStatus } = useContext(CartContext);
+
+  // Fetch user data from API
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -21,10 +23,9 @@ const ProfilePage = () => {
         setUser(response.data);
         console.log(response.data);
         setEditedUser(response.data);
-        
       } catch (error) {
         setError(true);
-    
+
         console.error("Error fetching user profile:", error);
       } finally {
         setLoading(false);
@@ -34,6 +35,7 @@ const ProfilePage = () => {
     fetchUserProfile();
   }, []);
 
+  // showing edit profile form
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -43,17 +45,22 @@ const ProfilePage = () => {
     setEditedUser(user);
   };
 
+  // saving update info for the profile
   const handleSaveEdit = async () => {
     try {
       await axios.put("http://localhost:3000/user/profile", editedUser, {
         withCredentials: true,
       });
-    //  throw new Error ('error in profile update')
+      //  throw new Error ('error in profile update')
       setUser(editedUser);
       setIsEditing(false);
       showToastMessage("Profile update successfully!", "Profile Notification");
     } catch (error) {
-      showToastMessage("Failed to update the Profile. Please try again.", "Profile Notification","bg-danger");
+      showToastMessage(
+        "Failed to update the Profile. Please try again.",
+        "Profile Notification",
+        "bg-danger"
+      );
       console.error("Error updating profile:", error);
     }
   };
@@ -89,7 +96,7 @@ const ProfilePage = () => {
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
       <div class="d-flex justify-content-center mt-5">
         <div
@@ -99,6 +106,8 @@ const ProfilePage = () => {
         ></div>
       </div>
     );
+  }
+
   if (error) {
     return (
       <div

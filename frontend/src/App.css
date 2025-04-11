@@ -5,6 +5,83 @@
 .productCard:hover {
     transform: scale(1.06);
 }
-.promotionalSection {
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
+.customerReviewCard {
+    border: none;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+  .customerReviewCard:hover {
+    transform: scale(1.08); 
+  }
+  
+/* cart Page Css */
+.btn-hover-effect {
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0,0.2);
+}
+.btn-hover-effect:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 8px rgba(0, 0, 0,0.5);
+  filter: brightness(85%);
+}
+
+  /* order-History page Css */
+
+.orderCard-hover-effect {
+  cursor:pointer;
+transition: all 0.3s ease; 
+}
+
+.orderCard-hover-effect:hover {
+transform: scale(1.05); 
+
+}
+
+/* Product Details page Css */
+.carousel-control-next,.carousel-control-prev,.carousel-indicators {
+
+  filter: invert(100%);
+
+}
+.addTocartBtn {
+  /* background-color: red; */
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+  .addTocartBtn:hover {
+transform: scale(1.05);
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a shadow for depth */
+}
+.customerReviewCard {
+border: none; 
+
+box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+overflow: hidden;
+transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.customerReviewCard:hover {
+transform: scale(1.08);
+box-shadow: rgba(0, 0, 0, 0.5) 0px 8px 15px;
+}
+
+.custom-shadow {
+ box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+}
+
+.orderPlaceForm label {
+color:grey
+}
+
+/* product page  */
+ .floating-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-size:1.3rem;
+  box-shadow: 0px 10px 8px rgba(0, 0, 0, 0.5);
 }
