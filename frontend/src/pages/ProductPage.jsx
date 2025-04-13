@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import Footer from "../components/footer";
 
 const ProductPage = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -136,6 +137,7 @@ const ProductPage = () => {
   }
 
   return (
+    <>
     <div className="container-fluid text-white">
       <div className="row my-3">
         <div className="col-md-6 offset-md-3">
@@ -263,6 +265,7 @@ const ProductPage = () => {
 
      
     </div>
+    </>
   );
 };
 

@@ -91,7 +91,7 @@ const CartPage = () => {
           className="alert alert-primary shadow-lg rounded text-center fs-2 "
           role="alert"
         >
-          <i class="fa-solid fa-box-open"></i> Cart is Empty!
+          <i className="fa-solid fa-box-open"></i> Cart is Empty!
         </div>
       ) : (
         <div>

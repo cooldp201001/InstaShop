@@ -21,7 +21,7 @@ export const CartProvider = ({ children }) => {
         setLoginStatus(true);
         //  console.log(items.length);
       } catch (error) {
-        console.error("Error fetching cart:", error);
+        // console.error("Error fetching cart:", error);
         // setLoading(false);
         if (error.status == 403 || error.status == 401) {
           setLoginStatus(false);

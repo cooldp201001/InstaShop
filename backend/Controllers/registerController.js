@@ -1,10 +1,10 @@
-const user = require("../models/userModel");
+const User = require("../models/userModel");
 const jwtUtils = require("../utils/jwtUtils");
 
 // Registration Route
 const userRegister = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
 
   try {
     const existingUser = await User.findOne({ email });

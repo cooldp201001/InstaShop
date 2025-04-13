@@ -105,7 +105,7 @@ const ProductDetails = () => {
         },
         phone: phone,
       };
-      console.log(orderInfo);
+      // console.log(orderInfo);
 
       const response = await axios.post(
         "http://localhost:3000/order",
@@ -256,14 +256,14 @@ const ProductDetails = () => {
                   <div className="form-floating ">
                     <input
                       type="number"
-                      className="form-control"
+                      className="form-control pb-0"
                       id="floatingQuantity"
                       value={cartQuantity}
                       min="1"
                       onChange={(e) => setCartQuantity(Number(e.target.value))}
                       placeholder="Quantity"
                       required
-                    />
+                   />
                     <label htmlFor="floatingQuantity">Quantity</label>
                   </div>
                 </div>
@@ -285,7 +285,7 @@ const ProductDetails = () => {
       <div className="card my-5 shadow-lg orderPlaceForm">
         <div className="card-body">
           <h3 className="card-title text-center my-2">Place Order</h3>
-          <form
+          <form autoComplete="off"
             onSubmit={(e) => {
               e.preventDefault();
               handlePlaceOrder();

@@ -2,12 +2,10 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const ProductCollection = require('./models/productModel');
 const port = 3000;
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors())
 require("dotenv").config()
 
 const corsOptions = {
@@ -19,20 +17,15 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
   
-//All routes
-// const categories = require('./Routes/categories');
+//All routers
 const randomRouter = require('./Routes/randomRouter')
 const productRouter = require('./Routes/productRouter');
 const registerRouter = require('./Routes/registerRouter');
 const loginRouter = require('./Routes/loginRouter');
-const authenticateToken = require('./middlewares/authMiddleware');
 const cartRouter = require('./Routes/cartRouter');
 const orderRouter = require('./Routes/orderRoutes');
 const userRouter = require('./Routes/userRouter');
-
-//Get all Products Categories
-// app.use('/categories',categories);
-// app.use('/randomCategories',getCategoriesWithImages);
+const authenticateToken = require('./middlewares/authMiddleware');
 
 // Geting random (categories, product, and reviews) data for the home page only
 app.use('/random',randomRouter)

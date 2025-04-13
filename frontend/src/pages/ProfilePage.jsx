@@ -21,7 +21,7 @@ const ProfilePage = () => {
           withCredentials: true,
         });
         setUser(response.data);
-        console.log(response.data);
+        // console.log(response.data);
         setEditedUser(response.data);
       } catch (error) {
         setError(true);
@@ -98,9 +98,9 @@ const ProfilePage = () => {
 
   if (loading) {
     return (
-      <div class="d-flex justify-content-center mt-5">
+      <div className="d-flex justify-content-center mt-5">
         <div
-          class="spinner-border text-primary"
+          className="spinner-border text-primary"
           role="status"
           style={{ width: "4rem", height: "4rem" }}
         ></div>

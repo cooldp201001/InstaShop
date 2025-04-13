@@ -14,6 +14,7 @@ import { CartProvider } from "../context/cartContext";
 import ToastNotification from "./components/ToastNotification";
 import { ToastProvider } from "../context/ToastContext";
 import NotFoundPage from "./pages/NotFoundPage";
+import Footer from "./components/footer";
 function App() {
     return (
         <ToastProvider>
