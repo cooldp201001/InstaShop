@@ -10,8 +10,6 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(cors())
 require("dotenv").config()
 
-
-
 const corsOptions = {
   origin: "http://localhost:5173",
   credentials: true,
@@ -22,34 +20,45 @@ const corsOptions = {
 app.use(cors(corsOptions));
   
 //All routes
-const categories = require('./Routes/categories');
-const randomRouter = require('./Routes/random')
-const productsRouter = require('./Routes/products');
-const registerRouter = require('./Routes/register');
+// const categories = require('./Routes/categories');
+const randomRouter = require('./Routes/randomRouter')
+const productRouter = require('./Routes/productRouter');
+const registerRouter = require('./Routes/registerRouter');
 const loginRouter = require('./Routes/loginRouter');
 const authenticateToken = require('./middlewares/authMiddleware');
-const cartRouter = require('./Routes/cartRoutes');
+const cartRouter = require('./Routes/cartRouter');
 const orderRouter = require('./Routes/orderRoutes');
-const userRouter = require('./Routes/userRoutes');
+const userRouter = require('./Routes/userRouter');
 
 //Get all Products Categories
 // app.use('/categories',categories);
 // app.use('/randomCategories',getCategoriesWithImages);
+
+// Geting random (categories, product, and reviews) data for the home page only
 app.use('/random',randomRouter)
 
-app.use('/product',productsRouter)
+// Product Router
+app.use('/product',productRouter)
 
+// Register Router
 app.use('/register',registerRouter)
+
+// Login Router
 app.use('/login',loginRouter)
 
-
-app.use('/user',authenticateToken,userRouter)
-app.use('/cart',authenticateToken,cartRouter);
-
 // Protected routes (need to login first)
-app.use('/order',authenticateToken,orderRouter);
+app.use(authenticateToken);
 
-app.post('/logout',authenticateToken,(req,res)=>{
+// user Router
+app.use('/user',userRouter)
+
+// Cart Router
+app.use('/cart',cartRouter);
+
+// Order Router
+app.use('/order',orderRouter);
+
+app.post('/logout',(req,res)=>{
   // console.log(res.cookie)
   res.clearCookie("token", { httpOnly: true, sameSite: 'strict', secure: true,}); // Clear the cookie
   res.status(200).json({ message: "Logout successful" });
